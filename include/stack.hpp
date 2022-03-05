@@ -1,15 +1,18 @@
 #ifndef STACK_HPP
 # define STACK_HPP
 
-class stack
+namespace ft
 {
-private:
-	/* data */
-public:
-	stack();
-	stack(stack const &s);
-	stack& operator=(stack const &s);
-	~stack();
-};
+	class stack
+	{
+	private:
+		/* data */
+	public:
+		stack();
+		stack(stack const &s);
+		stack& operator=(stack const &s);
+		~stack();
+	};
+}
 
 #endif
