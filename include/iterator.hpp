@@ -53,7 +53,6 @@ namespace ft
 	/* *********** */
 
 	/* Category tags */
-
 	struct input_iterator_tag {};
 	struct output_iterator_tag {};
 	struct forward_iterator_tag : public input_iterator_tag {};
@@ -61,7 +60,7 @@ namespace ft
 	struct random_access_iterator_tag : public bidirectional_iterator_tag {};
 
 
-	// Iterator base class
+	/* Iterator */
 	template <typename Category,
 				typename T,
 				typename Distance = std::ptrdiff_t,
@@ -77,7 +76,8 @@ namespace ft
 		typedef Category 	iterator_category;
 	};
 
-	// Iterator traits
+
+	/* Iterator traits */
 	template <typename Iterator>
 	class iterator_traits
 	{
@@ -112,8 +112,7 @@ namespace ft
 	};
 
 
-	/* Predefined iterators */
-
+	/* Reverse Iterator*/
 	template <typename Iterator>
 	class reverse_iterator
 		: public iterator<typename iterator_traits<Iterator>::iterator_category,
@@ -122,6 +121,9 @@ namespace ft
 						typename iterator_traits<Iterator>::pointer,
 						typename iterator_traits<Iterator>::reference>
 	{
+	protected:
+		Iterator	current;
+	
 	public:
 		/* Member types */
 		typedef Iterator                                             	iterator_type;
@@ -132,59 +134,18 @@ namespace ft
 		typedef typename iterator_traits<Iterator>::reference        	reference;
 
 		/* Member functions */
-		// Constructs
-		reverse_iterator();
-		explicit reverse_iterator (iterator_type it);
-		template <class Iter>
-		reverse_iterator (const reverse_iterator<Iter>& rev_it);
 		
+		// Constructs
+		reverse_iterator() : current() {}
+		explicit reverse_iterator (iterator_type it) : current(it) {}
+		template <class Iter>
+		reverse_iterator (const reverse_iterator<Iter>& rev_it) : current(rev_it.base()) {}
+
+		iterator_type base() const { return current; }
+
+		// operator
+		reference operator*() const { reference tmp = current; return tmp; }
 	};
-
-	// template <class Container>
-	// class back_insert_iterator : public iterator<>
-	// {
-
-	// };
-
-	// template <class Container>
-	// class front_insert_iterator : public iterator<>
-	// {
-
-	// };
-
-	// template <class Container>
-	// class insert_iterator : public iterator<>
-	// {
-
-	// };
-
-	// template <class T, class charT=char, class traits=char_traits<charT>, 
-	// 		class Distance = ptrdiff_t>
-	// class istream_iterator : public iterator<>
-	// {
-
-	// };
-
-	// template <class T, class charT=char, class traits=char_traits<charT> >
-	// class ostream_iterator : public iterator<>
-	// {
-
-	// };
-
-	// template <class charT, class traits=char_traits<charT> >
-	// class istreambuf_iterator : public iterator<>
-	// {
-
-	// };
-
-	// template <class charT, class traits=char_traits<charT> >
-	// class ostreambuf_iterator : public iterator<>
-	// {
-
-	// };
-
-
-
 
 }
 
