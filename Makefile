@@ -11,7 +11,8 @@ MECRO = FT
 LIBNAME = stl
 
 # exec name
-NAME = $(FT) $(STD)
+# NAME = $(FT) $(STD)
+NAME = $(FT)
 FT = ft_container
 STD = std_container
 
@@ -23,14 +24,14 @@ LIB = lib
 
 # file name
 MAIN = main.cpp
-SOURCE = iterator
+SOURCE = iterator vector
 OBJECT = $(foreach file, $(SOURCE), $(OBJ)/$(file).o)
 LIBRARY = $(LIB)/lib$(LIBNAME).a
 
 # dependency
 $(NAME): $(MAIN) $(LIBRARY)
 	$(CXX) $(CXXFLAGS) $(LFLAGS) $(IFLAGS) $(DFLAGS) $(MAIN) -o $(FT)
-	$(CXX) $(CXXFLAGS) $(LFLAGS) $(IFLAGS) $(MAIN) -o $(STD)
+	# $(CXX) $(CXXFLAGS) $(LFLAGS) $(IFLAGS) $(MAIN) -o $(STD)
 $(LIBRARY): $(OBJECT)
 	@mkdir -p $(LIB)
 	ar rcs $(LIBRARY) $(OBJECT)

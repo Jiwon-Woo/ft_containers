@@ -112,5 +112,7 @@ int main(int argc, char** argv) {
 	// 	std::cout << *it;
 	// }
 	// std::cout << std::endl;
+	ft::vector<int>::iterator rai;
+	// std::cout << rai.getPtr() << std::endl;
 	return (0);
 }
