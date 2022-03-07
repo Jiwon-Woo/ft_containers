@@ -107,6 +107,14 @@ namespace ft
 		typedef random_access_iterator_tag	iterator_category;
 	};
 
+
+	/* Random Access Iterator */
+	template <typename T>
+	class random_access_iterator : public iterator<random_access_iterator_tag, T>
+	{
+	};
+
+
 	/* Reverse Iterator*/
 	template <typename Iterator>
 	class reverse_iterator
