@@ -66,9 +66,8 @@ namespace ft
 				typename Distance = std::ptrdiff_t,
 				typename Pointer = T*,
 				typename Reference = T&>
-	class iterator
+	struct iterator
 	{
-	public:
 		typedef T        	value_type;
 		typedef Distance 	difference_type;
 		typedef Pointer  	pointer;
@@ -79,9 +78,8 @@ namespace ft
 
 	/* Iterator traits */
 	template <typename Iterator>
-	class iterator_traits
+	struct iterator_traits
 	{
-	public:
 		typedef typename Iterator::difference_type  	difference_type;
 		typedef typename Iterator::value_type       	value_type;
 		typedef typename Iterator::pointer          	pointer;
@@ -90,10 +88,9 @@ namespace ft
 	};
 
 	template <typename T>
-	class iterator_traits<T*>
+	struct iterator_traits<T*>
 	{
-	public:
-		typedef ptrdiff_t                 	difference_type;
+		typedef std::ptrdiff_t            	difference_type;
 		typedef T                         	value_type;
 		typedef T*                        	pointer;
 		typedef T&                        	reference;
@@ -101,16 +98,14 @@ namespace ft
 	};
 
 	template <typename T>
-	class iterator_traits<const T*>
+	struct iterator_traits<const T*>
 	{
-	public:
-		typedef ptrdiff_t                 	difference_type;
+		typedef std::ptrdiff_t            	difference_type;
 		typedef T                         	value_type;
 		typedef const T*                  	pointer;
 		typedef const T&                  	reference;
 		typedef random_access_iterator_tag	iterator_category;
 	};
-
 
 	/* Reverse Iterator*/
 	template <typename Iterator>
