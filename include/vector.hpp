@@ -12,8 +12,7 @@ namespace ft
 	protected:
 		/* implement vector iterator */
 		class vector_iterator
-			: public ft::iterator<ft::random_access_iterator_tag,
-								typename iterator_traits<const T*>::value_type>
+			: public ft::iterator<ft::random_access_iterator_tag, T>
 		{
 		protected:
 			typedef typename vector_iterator::value_type       	value_type;
@@ -27,8 +26,8 @@ namespace ft
 		public:
 			vector_iterator() : ptr(0) {}
 			vector_iterator(vector_iterator const &rai) : ptr(rai.ptr) {}
-			~vector_iterator() {}
-			vector_iterator(pointer const &ptr) : ptr(ptr) {}
+			virtual ~vector_iterator() {}
+			vector_iterator(pointer ptr) : ptr(ptr) {}
 			
 			vector_iterator& operator=(vector_iterator const &rai) {
 				ptr = rai.ptr;
