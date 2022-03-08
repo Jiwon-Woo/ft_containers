@@ -6,53 +6,10 @@
 namespace ft
 {
 
-	/* ************* */
-	/*   Functions   */
-	/* ************* */
+	/* ***************** */
+	/*   Category tags   */
+	/* ***************** */
 
-	/* Iterator operations */
-
-	// template <class InputIterator, class Distance>
-	// void advance (InputIterator& it, Distance n)
-	// {
-
-	// };
-
-	// template<class InputIterator>
-	// typename iterator_traits<InputIterator>::difference_type \
-	// 	distance (InputIterator first, InputIterator last)
-	// {
-
-	// };
-
-
-	/* Iterator generators */
-
-	// template <class Container>
-	// back_insert_iterator<Container> back_inserter (Container& x)
-	// {
-		
-	// };
-
-	// template <class Container>
-	// front_insert_iterator<Container> front_inserter (Container& x)
-	// {
-		
-	// };
-
-	// template <class Container, class Iterator>
-	// insert_iterator<Container> inserter (Container& x, Iterator it)
-	// {
-		
-	// };
-
-
-
-	/* *********** */
-	/*   Classes   */
-	/* *********** */
-
-	/* Category tags */
 	struct input_iterator_tag {};
 	struct output_iterator_tag {};
 	struct forward_iterator_tag : public input_iterator_tag {};
@@ -60,7 +17,11 @@ namespace ft
 	struct random_access_iterator_tag : public bidirectional_iterator_tag {};
 
 
-	/* Iterator */
+
+	/* ************ */
+	/*   Iterator   */
+	/* ************ */
+
 	template <typename Category,
 				typename T,
 				typename Distance = std::ptrdiff_t,
@@ -76,7 +37,11 @@ namespace ft
 	};
 
 
-	/* Iterator traits */
+
+	/* ******************* */
+	/*   Iterator traits   */
+	/* ******************* */
+
 	template <typename Iterator>
 	struct iterator_traits
 	{
@@ -107,7 +72,12 @@ namespace ft
 		typedef random_access_iterator_tag	iterator_category;
 	};
 
-	/* Reverse Iterator*/
+
+
+	/* ******************** */
+	/*   Reverse Iterator   */
+	/* ******************** */
+
 	template <typename Iterator>
 	class reverse_iterator
 		: public iterator<typename iterator_traits<Iterator>::iterator_category,
@@ -128,18 +98,68 @@ namespace ft
 		typedef typename iterator_traits<Iterator>::pointer          	pointer;
 		typedef typename iterator_traits<Iterator>::reference        	reference;
 
-		/* Member functions */
-		
-		// Constructs
+		/* Constructs */
 		reverse_iterator() : current() {}
 		explicit reverse_iterator (iterator_type it) : current(it) {}
-		template <class Iter>
-		reverse_iterator (const reverse_iterator<Iter>& rev_it) : current(rev_it.base()) {}
+		template <class Iter> reverse_iterator (const reverse_iterator<Iter>& rev_it) : current(rev_it.base()) {}
+		~reverse_iterator() {}
 
+		/* Member function */
 		iterator_type base() const { return current; }
 
-		// operator
-		reference operator*() const { reference tmp = current; return tmp; }
+		/* Operators */
+		reference operator*() const {
+			Iterator tmp = current;
+			return *--tmp;
+		}
+		
+		pointer operator->() const {
+			return &(operator*());
+		}
+		
+		reverse_iterator& operator++() {
+			--current;
+			return *this;
+		}
+		
+		reverse_iterator operator++(int) {
+			reverse_iterator tmp(*this);
+			--current;
+			return tmp;
+		}
+		
+		reverse_iterator& operator--() {
+			++current;
+			return *this;
+		}
+		
+		reverse_iterator operator--(int) {
+			reverse_iterator tmp(*this);
+			++current;
+			return tmp;
+		}
+		
+		reverse_iterator operator+ (difference_type n) const {
+			return reverse_iterator(current - n);
+		}
+		
+		reverse_iterator& operator+=(difference_type n) {
+			current -= n;
+			return *this;
+		}
+		
+		reverse_iterator operator- (difference_type n) const {
+			return reverse_iterator(current + n);
+		}
+		
+		reverse_iterator& operator-=(difference_type n) {
+			current += n;
+			return *this;
+		}
+		
+		reference operator[](difference_type n) const {
+			return *(*this + n);
+		}
 	};
 
 }
