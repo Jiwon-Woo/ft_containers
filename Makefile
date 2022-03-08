@@ -1,7 +1,7 @@
 # compile flag
 CXX = clang++
-# CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-CXXFLAGS = -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+# CXXFLAGS = -std=c++98
 LFLAGS = -L$(LIB) -l$(LIBNAME)
 IFLAGS = -I$(INCLUDE)
 DFLAGS = -D$(MECRO)
@@ -23,8 +23,8 @@ OBJ = obj
 LIB = lib
 
 # file name
-MAIN = main.cpp
-SOURCE = iterator vector
+MAIN = test.cpp
+SOURCE = utils iterator vector
 OBJECT = $(foreach file, $(SOURCE), $(OBJ)/$(file).o)
 LIBRARY = $(LIB)/lib$(LIBNAME).a
 
