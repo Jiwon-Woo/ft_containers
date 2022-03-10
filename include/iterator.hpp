@@ -193,9 +193,7 @@ namespace ft
 		vector_iterator() : i() {}
 		vector_iterator(const vector_iterator& vi) : i(vi.base()) {}
 		vector_iterator(iterator_type it) : i(it) {}
-		template <class Up> vector_iterator(const vector_iterator<Up>& u, 
-			typename enable_if<is_convertible<_Up, iterator_type>::value>::type* = 0)
-			: i(u.base()) {}
+		template <class Up> vector_iterator(const vector_iterator<Up>& u) : i(u.base()) {}
 
 		/* Assignment Operator */
 		vector_iterator& operator=(const vector_iterator& vi) {
@@ -252,7 +250,7 @@ namespace ft
 
 	template <class Iter>
 	vector_iterator<Iter> operator+ (
-			typename __wrap_iter<Iter>::difference_type n, vector_iterator<Iter> vi)
+			typename vector_iterator<Iter>::difference_type n, vector_iterator<Iter> vi)
 	{ vi += n; return vi; }
 
 	template <class Iter1, class Iter2>
