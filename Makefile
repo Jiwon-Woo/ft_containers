@@ -1,7 +1,7 @@
 # compile flag
 CXX = clang++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-# CXXFLAGS = -std=c++98
+# CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -std=c++98
 LFLAGS = -L$(LIB) -l$(LIBNAME)
 IFLAGS = -I$(INCLUDE)
 DFLAGS = -D$(MECRO)

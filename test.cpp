@@ -1,14 +1,12 @@
 #include <iostream>
 #include <string>
-#include <deque>
 
-#include <vector>
 #include <algorithm>    // std::lexicographical_compare
 #include <cctype>       // std::tolower
 
 #include "map.hpp"
 #include "stack.hpp"
-// #include "vector.hpp"
+#include "vector.hpp"
 #include "iterator.hpp"
 #include "utils.hpp"
 
@@ -32,62 +30,79 @@ typename ft::enable_if<ft::is_integral<T>::value, T>::type	isInt(T t)
 	return t;
 }
 
-bool mypredicate (int i, int j) {
-	return (i == j);
-}
 
-// a case-insensitive comparison function:
-bool mycomp (char c1, char c2) {
-	return std::tolower(c1) < std::tolower(c2);
-}
 
-int main() {
-	isInt(4);
-	// isInt(4.0);
+int main()
+{
+	ft::vector<int> zeroVec;
+	ft::vector<int> fiveVec(5);
 
-	int myints[] = {20,40,60,80,100};
-	std::vector<int> myvector(myints,myints+5);
+	std::cout << zeroVec.size() << std::endl;
+	std::cout << zeroVec.capacity() << std::endl;
+	std::cout << std::endl;
 
-	// using default comparison:
-	if ( std::equal (myvector.begin(), myvector.end(), myints) )
-		std::cout << "The contents of both sequences are equal.\n";
-	else
-		std::cout << "The contents of both sequences differ.\n";
+	std::cout << fiveVec.size() << std::endl;
+	std::cout << fiveVec.capacity() << std::endl;
+	std::cout << std::endl;
 
-	// using predicate comparison:
-	if ( std::equal (myvector.begin(), myvector.end(), myints, mypredicate) )
-		std::cout << "The contents of both sequences are equal.\n";
-	else
-		std::cout << "The contents of both sequences differ.\n";
+	for (ft::vector<int>::iterator it = fiveVec.begin(); it != fiveVec.end(); it++)
+	{
+		std::cout << *it << " ";
+	}
+	std::cout << std::endl;
+	std::cout << std::endl;
 
-	myvector[3]=81;
+	fiveVec[0] = 1;
+	fiveVec[1] = 2;
+	fiveVec[2] = 3;
+	fiveVec[3] = 4;
+	fiveVec[4] = 5;
 
-	// using default comparison:
-	if ( std::equal (myvector.begin(), myvector.end(), myints) )
-		std::cout << "The contents of both sequences are equal.\n";
-	else
-		std::cout << "The contents of both sequences differ.\n";
+	for (ft::vector<int>::iterator it = fiveVec.begin(); it != fiveVec.end(); it++)
+	{
+		std::cout << *it << " ";
+	}
+	std::cout << std::endl;
 
-	// using predicate comparison:
-	if ( std::equal (myvector.begin(), myvector.end(), myints, mypredicate) )
-		std::cout << "The contents of both sequences are equal.\n";
-	else
-		std::cout << "The contents of both sequences differ.\n";
+	ft::vector<int>::iterator begin = fiveVec.begin();
+	std::cout << begin[2] << std::endl;
 
-	char foo[]="APPLE";
-	char bar[]="apartment";
 
-	std::cout << std::boolalpha;
+	ft::vector<int> copyIterVec(fiveVec.begin(), fiveVec.end());
+	for (ft::vector<int>::iterator it = copyIterVec.begin(); it != copyIterVec.end(); it++)
+	{
+		std::cout << *it << " ";
+	}
+	std::cout << std::endl;
+	std::cout << std::endl;
 
-	std::cout << "Comparing foo and bar lexicographically (foo<bar):\n";
+	copyIterVec[2] = 7;
+	for (ft::vector<int>::iterator it = fiveVec.begin(); it != fiveVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
+	for (ft::vector<int>::iterator it = copyIterVec.begin(); it != copyIterVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
+	std::cout << std::endl;
 
-	std::cout << "Using default comparison (operator<): ";
-	std::cout << std::lexicographical_compare(foo,foo+5,bar,bar+9);
-	std::cout << '\n';
+	fiveVec[0] = -1;
+	for (ft::vector<int>::iterator it = fiveVec.begin(); it != fiveVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
+	for (ft::vector<int>::iterator it = copyIterVec.begin(); it != copyIterVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
+	std::cout << std::endl;
 
-	std::cout << "Using mycomp as comparison object: ";
-	std::cout << std::lexicographical_compare(foo,foo+5,bar,bar+9,mycomp);
-	std::cout << '\n';
+	ft::vector<int> copyVec(fiveVec);
+	for (ft::vector<int>::iterator it = copyVec.begin(); it != copyVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
 
+	const ft::vector<int> constFiveVec(5);
+	ft::vector<int> constCopyVec(constFiveVec);
+	for (ft::vector<int>::iterator it = constCopyVec.begin(); it != constCopyVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
 	return (0);
 }

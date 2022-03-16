@@ -99,7 +99,7 @@ namespace ft
 				return true;
 			++first1; ++first2;
 		}
-		return (first2!=last2);
+		return (first2 != last2);
 	}
 
 	template <typename InputIterator1, typename InputIterator2, typename Compare>

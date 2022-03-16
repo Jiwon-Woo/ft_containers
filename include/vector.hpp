@@ -16,7 +16,7 @@ namespace ft
 		typedef std::ptrdiff_t                               	difference_type;
 		typedef std::size_t                                  	size_type;
 		typedef typename allocator_type::reference           	reference;
-		typedef typename allocator_type::const_pointer       	const_reference;
+		typedef typename allocator_type::const_reference     	const_reference;
 		typedef typename allocator_type::pointer             	pointer;
 		typedef typename allocator_type::const_pointer       	const_pointer;
 		typedef ft::vector_iterator<pointer>                 	iterator;
@@ -28,31 +28,47 @@ namespace ft
 		pointer       	_begin;
 		pointer       	_end;
 		pointer       	_end_cap;
-		size_type     	_size;
-		allocator_type	alloc;
+		allocator_type	_alloc;
+		// size_type     	_size;
 	
 	public:
 		/* Constructors */
-		vector()
-			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _size(0), alloc(allocator_type()) {}
-		explicit vector (const allocator_type& alloc)
-			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _size(0), alloc(alloc) {}
-		explicit vector (size_type n, const value_type& val = value_type(),
+		explicit vector(const allocator_type& alloc = allocator_type())
+			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {}
+		explicit vector(size_type n, const value_type& val = value_type(),
 						const allocator_type& alloc = allocator_type())
-			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), alloc(alloc) {
+			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {
 			if (n > 0) {
-				this->_size = n;
-				this->_begin = this->_end = alloc.allocate(n);
+				this->_begin = this->_end = _alloc.allocate(n);
 				this->_end_cap = this->_begin + n;
-				// this->__begin_ = this->__end_ = __alloc_traits::allocate(this->__alloc(), __n);
-				// this->__end_cap() = this->__begin_ + __n;
-				// __annotate_new(0);
+				for (; this->_end != this->_end_cap; _end++) {
+					_alloc.construct(this->_end, val);
+				}
 			}
 		}
 		template <class InputIterator>
-		vector (InputIterator first, InputIterator last,
-				const allocator_type& alloc = allocator_type());
-		vector (const vector& x);
+		vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {
+			difference_type n = last - first;
+			if (n > 0) {
+				this->_begin = this->_end = _alloc.allocate(n);
+				this->_end_cap = this->_begin + n;
+				for (InputIterator it = first; it != last; it++, _end++) {
+					_alloc.construct(this->_end, *it);
+				}
+			}
+		}
+		vector (const vector& x)
+			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(x._alloc) {
+			size_type n = x.size();
+			if (n > 0) {
+				this->_begin = this->_end = _alloc.allocate(n);
+				this->_end_cap = this->_begin + n;
+				for (vector::const_iterator it = x.begin(); it != x.end(); it++, _end++) {
+					_alloc.construct(this->_end, *it);
+				}
+			}
+		}
 
 		/* Destructors */
 		~vector() {}
