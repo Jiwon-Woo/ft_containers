@@ -4,8 +4,10 @@
 
 int main()
 {
+	std::vector<int> emptyVec;
 	std::vector<int> zeroVec;
 	std::vector<int> fiveVec(5);
+	std::vector<int> manyVec(4);
 
 	std::cout << zeroVec.size() << std::endl;
 	std::cout << zeroVec.capacity() << std::endl;
@@ -32,4 +34,22 @@ int main()
 		std::cout << *it << " ";
 	}
 	std::cout << std::endl;
+
+	std::cout << manyVec.size() << std::endl;
+	std::cout << manyVec.capacity() << std::endl;
+	std::cout << std::endl;
+	manyVec = fiveVec;
+	std::cout << fiveVec.size() << std::endl;
+	std::cout << fiveVec.capacity() << std::endl;
+	std::cout << manyVec.size() << std::endl;
+	std::cout << manyVec.capacity() << std::endl;
+
+	// std::cout << emptyVec.back() << std::endl;
+	std::cout << std::endl;
+
+	std::cout << fiveVec.size() << std::endl;
+	std::cout << fiveVec.capacity() << std::endl;
+	fiveVec.resize(21);
+	std::cout << fiveVec.size() << std::endl;
+	std::cout << fiveVec.capacity() << std::endl;
 }

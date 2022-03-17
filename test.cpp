@@ -99,20 +99,30 @@ int main()
 	{ std::cout << *it << " "; }
 	std::cout << std::endl;
 
-	ft::vector<int> copycopyVec(copyIterVec);
+	ft::vector<int> copycopyVec = copyIterVec;
 	for (ft::vector<int>::iterator it = copycopyVec.begin(); it != copycopyVec.end(); it++)
 	{ std::cout << *it << " "; }
 	std::cout << std::endl;
 
 	const ft::vector<int> constFiveVec(5);
-	ft::vector<int> constCopyVec(constFiveVec);
+	ft::vector<int> constCopyVec = zeroVec;
+	constCopyVec.resize(4, 100);
+	constCopyVec.resize(6);
+	std::cout << constCopyVec.size() << " " << constCopyVec.capacity() << std::endl;
+	constCopyVec.reserve(45);
+	std::cout << constCopyVec.size() << " " << constCopyVec.capacity() << std::endl;
 	for (ft::vector<int>::iterator it = constCopyVec.begin(); it != constCopyVec.end(); it++)
 	{ std::cout << *it << " "; }
 	std::cout << std::endl;
+	for (ft::vector<int>::iterator it = zeroVec.begin(); it != zeroVec.end(); it++)
+	{ std::cout << *it << " "; }
 	std::cout << std::endl;
 
 	std::cout << zeroVec.max_size() << std::endl;
 	std::cout << fiveVec.max_size() << std::endl;
 	std::cout << constCopyVec.max_size() << std::endl;
+	std::cout << constFiveVec[3] << std::endl;
+	std::cout << constFiveVec[4] << std::endl;
+	// while (1);
 	return (0);
 }

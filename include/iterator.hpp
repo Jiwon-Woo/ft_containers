@@ -112,7 +112,7 @@ namespace ft
 		}
 
 		/* Destrcutor */
-		~reverse_iterator() {}
+		virtual ~reverse_iterator() {}
 
 		/* Member function */
 		iterator_type base() const { return current; }
@@ -193,7 +193,7 @@ namespace ft
 		vector_iterator() : i() {}
 		vector_iterator(const vector_iterator& vi) : i(vi.base()) {}
 		vector_iterator(iterator_type it) : i(it) {}
-		// template <class Up> vector_iterator(const vector_iterator<Up>& u) : i(u.base()) {}
+		template <class Up> vector_iterator(const vector_iterator<Up>& u) : i(u.base()) {}
 
 		/* Assignment Operator */
 		vector_iterator& operator=(const vector_iterator& vi) {
@@ -204,7 +204,7 @@ namespace ft
 		}
 
 		/* Destrcutor */
-		~vector_iterator() {}
+		virtual ~vector_iterator() {}
 
 		/* Member function */
 		iterator_type base() const { return i; }
