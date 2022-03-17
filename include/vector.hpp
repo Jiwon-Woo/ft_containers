@@ -2,6 +2,7 @@
 # define VECTOR_HPP
 
 #include <memory>
+#include <limits>
 #include "iterator.hpp"
 #include "utils.hpp"
 
@@ -64,7 +65,7 @@ namespace ft
 			if (n > 0) {
 				this->_begin = this->_end = _alloc.allocate(n);
 				this->_end_cap = this->_begin + n;
-				for (vector::const_iterator it = x.begin(); it != x.end(); it++, _end++) {
+				for (const_iterator it = x.begin(); it != x.end(); it++, _end++) {
 					_alloc.construct(this->_end, *it);
 				}
 			}
@@ -90,10 +91,7 @@ namespace ft
 		size_type size() const { return static_cast<size_type>(this->_end - this->_begin); }
 		size_type capacity() const { return static_cast<size_type>(this->_end_cap - this->_begin); }
 		bool empty() const { return this->_begin == this->_end; }
-		size_type max_size() const {
-			// return _VSTD::min<size_type>(__alloc_traits::max_size(this->__alloc()),
-			// 							numeric_limits<difference_type>::max());
-		}
+		size_type max_size() const { return std::numeric_limits<size_type>::max() / sizeof(value_type); }
 		void resize (size_type n, value_type val = value_type()) {
 			// size_type s = size();
 			// if (s < n)
@@ -160,7 +158,31 @@ namespace ft
 		void swap (vector& x);
 		void clear();
 
+		/* Allocator */
+		// allocator_type get_allocator() const { return allocator_type(); }
+
 	};
+
+	template <class T, class Alloc>
+	bool operator==(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator!=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator<(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator<=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator>(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	bool operator>=(const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+
+	template <class T, class Alloc>
+	void swap(vector<T,Alloc>& x, vector<T,Alloc>& y);
 }
 
 #endif

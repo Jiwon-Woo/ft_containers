@@ -99,10 +99,20 @@ int main()
 	{ std::cout << *it << " "; }
 	std::cout << std::endl;
 
+	ft::vector<int> copycopyVec(copyIterVec);
+	for (ft::vector<int>::iterator it = copycopyVec.begin(); it != copycopyVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
+
 	const ft::vector<int> constFiveVec(5);
 	ft::vector<int> constCopyVec(constFiveVec);
 	for (ft::vector<int>::iterator it = constCopyVec.begin(); it != constCopyVec.end(); it++)
 	{ std::cout << *it << " "; }
 	std::cout << std::endl;
+	std::cout << std::endl;
+
+	std::cout << zeroVec.max_size() << std::endl;
+	std::cout << fiveVec.max_size() << std::endl;
+	std::cout << constCopyVec.max_size() << std::endl;
 	return (0);
 }
