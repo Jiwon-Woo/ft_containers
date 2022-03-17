@@ -43,13 +43,42 @@ int main()
 	std::cout << fiveVec.capacity() << std::endl;
 	std::cout << manyVec.size() << std::endl;
 	std::cout << manyVec.capacity() << std::endl;
+	manyVec.assign(7, 7);
+	std::cout << manyVec.size() << std::endl;
+	std::cout << manyVec.capacity() << std::endl;
 
-	// std::cout << emptyVec.back() << std::endl;
+	std::cout << std::endl;
+	for (std::vector<int>::iterator it = fiveVec.begin(); it != fiveVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
+	for (std::vector<int>::iterator it = manyVec.begin(); it != manyVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+	std::cout << fiveVec.size() << " " << fiveVec.capacity() << std::endl;
+	std::cout << manyVec.size() << " " << manyVec.capacity() << std::endl;
+	std::cout << std::endl;
+
+	manyVec.swap(fiveVec);
+	
+	for (std::vector<int>::iterator it = fiveVec.begin(); it != fiveVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
+	for (std::vector<int>::iterator it = manyVec.begin(); it != manyVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
+	std::cout << std::endl;
+
+	std::cout << fiveVec.size() << " " << fiveVec.capacity() << std::endl;
+	std::cout << manyVec.size() << " " << manyVec.capacity() << std::endl;
+
+	emptyVec.reserve(2);
 	std::cout << std::endl;
 
 	std::cout << fiveVec.size() << std::endl;
 	std::cout << fiveVec.capacity() << std::endl;
-	fiveVec.resize(21);
+	fiveVec.resize(19);
 	std::cout << fiveVec.size() << std::endl;
 	std::cout << fiveVec.capacity() << std::endl;
 }

@@ -117,26 +117,7 @@ namespace ft
 
 		vector& operator=(const vector& x) {
 			if (this != &x){
-
-				size_type copy_size = x.size();
-				size_type origin_size = this->size();
-				size_type origin_cap = this->capacity();
-
-				if (copy_size <= origin_cap) {
-					for (size_type i = 0; i < copy_size; i++) { (*this)[i] = x[i]; }
-					for (size_type i = 0; i < origin_size - copy_size; i++) {
-						this->_end--;
-						_alloc.destroy(this->_end);
-					}
-				} else {
-					this->clear();
-					_alloc.deallocate(this->_begin, origin_cap);
-					this->_begin = this->_end = _alloc.allocate(copy_size);
-					this->_end_cap = this->_begin + copy_size;
-					for (const_iterator it = x.begin(); it != x.end(); it++, _end++) {
-						_alloc.construct(this->_end, *it);
-					}
-				}
+				this->assign(x.begin(), x.end());
 			}
 			return *this;
 		}
@@ -177,8 +158,12 @@ namespace ft
 						_alloc.construct(this->_end, val);
 					}
 				} else {
+					size_type temp_cap;
+					if (this->capacity() == 0) { temp_cap = 1; }
+					else if (this->capacity() * 2 > this->max_size()) { temp_cap = this->max_size(); }
+					else { temp_cap = this->capacity() * 2; }
+
 					size_type diff = n - this->size();
-					size_type temp_cap = max_size() < capacity() * 2 ? max_size() : capacity() * 2;
 					size_type new_cap = n > temp_cap ? n : temp_cap;
 					this->reserve(new_cap);
 					for (size_type i = 0; i < diff; i++, _end++) {
@@ -255,17 +240,97 @@ namespace ft
 		/* ************* */
 
 		template <class InputIterator>
-		void assign (InputIterator first, InputIterator last);
-		void assign (size_type n, const value_type& val);
-		void push_back (const value_type& val);
-		void pop_back();
+		void assign (InputIterator first, InputIterator last) {
+			difference_type n = last - first;
+			if (n > this->max_size())
+				throw vector::_throw_length_error();
+
+			size_type cap = this->capacity();
+			this->clear();
+			if (n > cap) {
+				_alloc.deallocate(this->_begin, cap);
+				this->_begin = this->_end = _alloc.allocate(n);
+				this->_end_cap = this->_begin + n;
+			}
+			for (InputIterator it = first; it != last; it++, _end++) {
+				_alloc.construct(this->_end, *it);
+			}
+		}
+
+		void assign (size_type n, const value_type& val) {
+			if (n > this->max_size())
+				throw vector::_throw_length_error();
+			
+			size_type origin_size = this->size();
+			size_type origin_cap = this->capacity();
+			if (n <= origin_cap) {
+				for (size_type i = 0; i < n; i++) { (*this)[i] = val; }
+				for (size_type i = 0; i < origin_size - n; i++) {
+					this->_end--;
+					_alloc.destroy(this->_end);
+				}
+			} else {
+				this->clear();
+				_alloc.deallocate(this->_begin, origin_cap);
+				this->_begin = this->_end = _alloc.allocate(n);
+				this->_end_cap = this->_begin + n;
+				for (; this->_end != this->_end_cap; _end++) {
+					_alloc.construct(this->_end, val);
+				}
+			}
+		}
+
+		void push_back (const value_type& val) {
+			if (this->_end == this->_end_cap) {
+				if (this->size() == this->max_size())
+					throw vector::_throw_length_error();
+				
+				size_type new_cap;
+				if (this->capacity == 0) { new_cap = 1; }
+				else if (this->capacity() * 2 > this->max_size()) { new_cap = this->max_size(); }
+				else { new_cap = this->capacity() * 2; }
+				this->reserve(new_cap);
+			}
+			_alloc.construct(this->_end, val); _end++;
+		}
+
+		void pop_back() {
+			if (this->_begin != this->_end)
+				--_end; _alloc.destroy(this->_end);
+		}
+
 		iterator insert (iterator position, const value_type& val);
 		void insert (iterator position, size_type n, const value_type& val);
 		template <class InputIterator>
 		void insert (iterator position, InputIterator first, InputIterator last);
-		iterator erase (iterator position);
+		
+		iterator erase (iterator position) {
+			// for (iterator it = position; it + 1 != this->end(); it++) {
+			// 	*it = *(it + 1);
+			// }
+			// _alloc.destroy(this->_end); _end--;
+		}
+
 		iterator erase (iterator first, iterator last);
-		void swap (vector& x);
+
+		void swap (vector& x) {
+			if (this == &x)
+				return;
+			
+			pointer temp_begin = x._begin;
+			pointer temp_end = x._end;
+			pointer temp_end_cap = x._end_cap;
+			allocator_type &temp_alloc = x._alloc;
+
+			x._begin = this->_begin;
+			x._end = this->_end;
+			x._end_cap = this->_end_cap;
+			x._alloc = this->_alloc;
+			this->_begin = temp_begin;
+			this->_end = temp_end;
+			this->_end_cap = temp_end_cap;
+			this->_alloc = temp_alloc;
+		}
 		
 		void clear() {
 			size_type n = this->size();

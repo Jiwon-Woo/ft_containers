@@ -94,20 +94,22 @@ int main()
 	std::cout << std::endl;
 	std::cout << std::endl;
 
-	ft::vector<int> copyVec(fiveVec);
+	ft::vector<int> copyVec = copyIterVec;
 	for (ft::vector<int>::iterator it = copyVec.begin(); it != copyVec.end(); it++)
 	{ std::cout << *it << " "; }
 	std::cout << std::endl;
 
-	ft::vector<int> copycopyVec = copyIterVec;
+	ft::vector<int> copycopyVec = fiveVec;
 	for (ft::vector<int>::iterator it = copycopyVec.begin(); it != copycopyVec.end(); it++)
 	{ std::cout << *it << " "; }
+	std::cout << std::endl;
 	std::cout << std::endl;
 
 	const ft::vector<int> constFiveVec(5);
 	ft::vector<int> constCopyVec = zeroVec;
 	constCopyVec.resize(4, 100);
 	constCopyVec.resize(6);
+	constCopyVec.resize(2);
 	std::cout << constCopyVec.size() << " " << constCopyVec.capacity() << std::endl;
 	constCopyVec.reserve(45);
 	std::cout << constCopyVec.size() << " " << constCopyVec.capacity() << std::endl;
@@ -123,6 +125,21 @@ int main()
 	std::cout << constCopyVec.max_size() << std::endl;
 	std::cout << constFiveVec[3] << std::endl;
 	std::cout << constFiveVec[4] << std::endl;
+
+	try
+	{
+		std::cout << constFiveVec[6] << std::endl;
+		/* code */
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	
+	ft::vector<int> noneVec;
+	std::cout << noneVec.size() << " " << noneVec.capacity() << std::endl;
+	noneVec.reserve(5);
+	std::cout << noneVec.size() << " " << noneVec.capacity() << std::endl;
 	// while (1);
 	return (0);
 }
