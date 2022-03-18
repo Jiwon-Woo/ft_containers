@@ -4,6 +4,7 @@
 #include <memory>
 #include <limits>
 #include <iostream>
+#include <stdexcept>
 #include "iterator.hpp"
 #include "utils.hpp"
 
@@ -21,8 +22,8 @@ namespace ft
 		typedef typename allocator_type::const_reference     	const_reference;
 		typedef typename allocator_type::pointer             	pointer;
 		typedef typename allocator_type::const_pointer       	const_pointer;
-		typedef ft::vector_iterator<pointer>                 	iterator;
-		typedef ft::vector_iterator<const_pointer>           	const_iterator;
+		typedef ft::vector_iterator<value_type>              	iterator;
+		typedef ft::vector_iterator<const value_type>        	const_iterator;
 		typedef typename ft::reverse_iterator<iterator>      	reverse_iterator;
 		typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -62,8 +63,8 @@ namespace ft
 						const allocator_type& alloc = allocator_type())
 			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {
 			if (n > 0) {
-				if (n > this->max_size())
-					throw vector::_throw_length_error();
+				if (static_cast<size_type>(n) > this->max_size())
+					throw std::length_error("vector");
 				this->_begin = this->_end = _alloc.allocate(n);
 				this->_end_cap = this->_begin + n;
 				for (size_type i = 0; i < n; i++, _end++) {
@@ -78,8 +79,8 @@ namespace ft
 			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {
 			difference_type n = last - first;
 			if (n > 0) {
-				if (n > this->max_size())
-					throw vector::_throw_length_error();
+				if (static_cast<size_type>(n) > this->max_size())
+					throw std::length_error("vector");
 				this->_begin = this->_end = _alloc.allocate(n);
 				this->_end_cap = this->_begin + n;
 				for (InputIterator it = first; it != last; it++, _end++) {
@@ -92,8 +93,8 @@ namespace ft
 			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(x._alloc) {
 			size_type n = x.size();
 			if (n > 0) {
-				if (n > this->max_size())
-					throw vector::_throw_length_error();
+				if (static_cast<size_type>(n) > this->max_size())
+					throw std::length_error("vector");
 				this->_begin = this->_end = _alloc.allocate(n);
 				this->_end_cap = this->_begin + n;
 				for (const_iterator it = x.begin(); it != x.end(); it++, _end++) {
@@ -107,7 +108,7 @@ namespace ft
 		/*   Destructors   */
 		/* *************** */
 
-		~vector() {
+		virtual ~vector() {
 			this->clear();
 			_alloc.deallocate(this->_begin, this->capacity());
 		}
@@ -149,8 +150,8 @@ namespace ft
 		size_type max_size() const { return std::numeric_limits<size_type>::max() / sizeof(value_type); }
 		
 		void resize (size_type n, value_type val = value_type()) {
-			if (n > this->max_size())
-				throw vector::_throw_length_error();
+			if (static_cast<size_type>(n) > this->max_size())
+				throw std::length_error("vector");
 
 			size_type s = this->size();
 			if (s < n) {
@@ -183,8 +184,8 @@ namespace ft
 		void reserve (size_type n) {
 			if (n > this->capacity()) {
 
-				if (n > this->max_size())
-					throw vector::_throw_length_error();
+				if (static_cast<size_type>(n) > this->max_size())
+					throw std::length_error("vector");
 
 				pointer new_begin, new_end;
 				new_begin = new_end = _alloc.allocate(n);
@@ -208,25 +209,25 @@ namespace ft
 
 		reference operator[] (size_type n) {
 			if (n >= size())
-				throw vector::_throw_out_of_range();
+				throw std::out_of_range("vector");
 			return *(this->_begin + n);
 		}
 
 		const_reference operator[] (size_type n) const {
 			if (n >= size())
-				throw vector::_throw_out_of_range();
+				throw std::out_of_range("vector");
 			return *(this->_begin + n);
 		}
 
 		reference at (size_type n) {
 			if (n >= size())
-				throw vector::_throw_out_of_range();
+				throw std::out_of_range("vector");
 			return *(this->_begin + n);
 		}
 
 		const_reference at (size_type n) const {
 			if (n >= size())
-				throw vector::_throw_out_of_range();
+				throw std::out_of_range("vector");
 			return *(this->_begin + n);
 		}
 
@@ -244,12 +245,12 @@ namespace ft
 		void assign (InputIterator first, InputIterator last,
 				typename ft::enable_if<ft::is_vector_iterator<typename InputIterator::iterator_category>::value>::type* = nullptr) {
 			difference_type n = last - first;
-			if (n > this->max_size())
-				throw vector::_throw_length_error();
+			if (static_cast<size_type>(n) > this->max_size())
+				throw std::length_error("vector");
 
 			this->clear();
 			size_type cap = this->capacity();
-			if (n > cap) {
+			if (static_cast<size_type>(n) > cap) {
 				_alloc.deallocate(this->_begin, cap);
 				this->_begin = this->_end = _alloc.allocate(n);
 				this->_end_cap = this->_begin + n;
@@ -260,8 +261,8 @@ namespace ft
 		}
 
 		void assign (size_type n, const value_type& val) {
-			if (n > this->max_size())
-				throw vector::_throw_length_error();
+			if (static_cast<size_type>(n) > this->max_size())
+				throw std::length_error("vector");
 			
 			this->clear();
 			size_type cap = this->capacity();
@@ -278,7 +279,7 @@ namespace ft
 		void push_back (const value_type& val) {
 			if (this->_end == this->_end_cap) {
 				if (this->size() == this->max_size())
-					throw vector::_throw_length_error();
+					throw std::length_error("vector");
 				
 				size_type new_cap;
 				if (this->capacity() == 0) { new_cap = 1; }
@@ -330,8 +331,8 @@ namespace ft
 
 		void insert (iterator position, size_type n, const value_type& val) {
 			if (n > 0) {
-				if (this->size() + n > this->max_size())
-					throw vector::_throw_length_error();
+				if (this->size() + static_cast<size_type>(n) > this->max_size())
+					throw std::length_error("vector");
 				
 				pointer pos = this->_begin + (position - this->begin());
 				if (this->_end + n < this->_end_cap) {
@@ -377,8 +378,8 @@ namespace ft
 				typename ft::enable_if<ft::is_vector_iterator<typename InputIterator::iterator_category>::value>::type* = nullptr) {
 			difference_type n = last - first;
 			if (n > 0) {
-				if (this->size() + n > this->max_size())
-					throw vector::_throw_length_error();
+				if (this->size() + static_cast<size_type>(n) > this->max_size())
+					throw std::length_error("vector");
 				
 				pointer pos = this->_begin + (position - this->begin());
 				if (this->_end + n < this->_end_cap) {

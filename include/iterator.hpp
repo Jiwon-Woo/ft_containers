@@ -143,19 +143,19 @@ namespace ft
 
 	template <class Iterator>
 	bool operator<(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
-	{ return lhs.base() < rhs.base(); }
-
-	template <class Iterator>
-	bool operator<=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
-	{ return lhs.base() <= rhs.base(); }
-
-	template <class Iterator>
-	bool operator>(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
 	{ return lhs.base() > rhs.base(); }
 
 	template <class Iterator>
-	bool operator>=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	bool operator<=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
 	{ return lhs.base() >= rhs.base(); }
+
+	template <class Iterator>
+	bool operator>(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	{ return lhs.base() < rhs.base(); }
+
+	template <class Iterator>
+	bool operator>=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	{ return lhs.base() <= rhs.base(); }
 
 	template <class Iterator>
 	reverse_iterator<Iterator> operator+(
@@ -186,25 +186,24 @@ namespace ft
 	/*   Vector Iterator   */
 	/* ******************* */
 
-	template <typename Iterator>
+	template <typename T>
 	class vector_iterator
 	{
 	public:
-		typedef Iterator                                                  	iterator_type;
-		typedef typename iterator_traits<iterator_type>::iterator_category	iterator_category;
-		typedef typename iterator_traits<iterator_type>::value_type       	value_type;
-		typedef typename iterator_traits<iterator_type>::difference_type  	difference_type;
-		typedef typename iterator_traits<iterator_type>::pointer          	pointer;
-		typedef typename iterator_traits<iterator_type>::reference        	reference;
-	
+		typedef std::ptrdiff_t            	difference_type;
+		typedef T                         	value_type;
+		typedef T*                        	pointer;
+		typedef T&                        	reference;
+		typedef random_access_iterator_tag	iterator_category;
+
 	private:
-		iterator_type i;
+		pointer i;
 	
 	public:
 		/* Constructors */
-		vector_iterator() : i() {}
+		vector_iterator() : i(nullptr) {}
 		vector_iterator(const vector_iterator& vi) : i(vi.base()) {}
-		vector_iterator(iterator_type it) : i(it) {}
+		vector_iterator(pointer it) : i(it) {}
 		template <class Up> vector_iterator(const vector_iterator<Up>& u,
 				typename ft::enable_if<is_vector_iterator<typename Up::iterator_category>::value>::type* = nullptr)
 			: i(u.base()) {}
@@ -217,11 +216,16 @@ namespace ft
 			return *this;
 		}
 
+		/* Conversion operator */
+		operator vector_iterator<const value_type> () const { 
+			return (vector_iterator<const value_type>(this->i));
+		}
+
 		/* Destrcutor */
 		virtual ~vector_iterator() {}
 
 		/* Member function */
-		iterator_type base() const { return i; }
+		pointer base() const { return i; }
 
 		/* Member function Operators */
 		reference operator*() const { return *i; }
