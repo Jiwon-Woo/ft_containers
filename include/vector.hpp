@@ -34,22 +34,6 @@ namespace ft
 		pointer       	_end_cap;
 		allocator_type	_alloc;
 
-		class _throw_out_of_range : public std::exception
-		{
-		public:
-			virtual const char* what() const throw() {
-				return "vector index out of bounds";
-			}
-		};
-
-		class _throw_length_error : public std::exception
-		{
-		public:
-			virtual const char* what() const throw() {
-				return "vector length out of max size";
-			}
-		};
-
 
 	public:
 		/* **************** */
