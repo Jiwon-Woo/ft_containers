@@ -61,7 +61,7 @@ int main()
 	std::cout << std::endl;
 
 	manyVec.swap(fiveVec);
-	
+
 	for (std::vector<int>::iterator it = fiveVec.begin(); it != fiveVec.end(); it++)
 	{ std::cout << *it << " "; }
 	std::cout << std::endl;
@@ -69,6 +69,9 @@ int main()
 	{ std::cout << *it << " "; }
 	std::cout << std::endl;
 	std::cout << std::endl;
+
+	std::cout << &(*(manyVec.begin() + 2)) << std::endl;
+	std::cout << &(*manyVec.erase(manyVec.begin() + 2)) << std::endl;
 
 	std::cout << fiveVec.size() << " " << fiveVec.capacity() << std::endl;
 	std::cout << manyVec.size() << " " << manyVec.capacity() << std::endl;
@@ -78,7 +81,7 @@ int main()
 
 	std::cout << fiveVec.size() << std::endl;
 	std::cout << fiveVec.capacity() << std::endl;
-	fiveVec.resize(19);
+	fiveVec.insert(fiveVec.begin() + 3, 8, 17);
 	std::cout << fiveVec.size() << std::endl;
 	std::cout << fiveVec.capacity() << std::endl;
 }

@@ -109,16 +109,28 @@ int main()
 	ft::vector<int> constCopyVec = zeroVec;
 	constCopyVec.resize(4, 100);
 	constCopyVec.resize(6);
-	constCopyVec.resize(2);
+	// constCopyVec.resize(2);
 	std::cout << constCopyVec.size() << " " << constCopyVec.capacity() << std::endl;
 	constCopyVec.reserve(45);
 	std::cout << constCopyVec.size() << " " << constCopyVec.capacity() << std::endl;
 	for (ft::vector<int>::iterator it = constCopyVec.begin(); it != constCopyVec.end(); it++)
 	{ std::cout << *it << " "; }
 	std::cout << std::endl;
-	for (ft::vector<int>::iterator it = zeroVec.begin(); it != zeroVec.end(); it++)
+	
+	std::cout << &(*constCopyVec.erase(constCopyVec.begin() + 1)) << std::endl;
+	
+	for (ft::vector<int>::iterator it = constCopyVec.begin(); it != constCopyVec.end(); it++)
 	{ std::cout << *it << " "; }
 	std::cout << std::endl;
+
+	std::cout << *constCopyVec.insert(constCopyVec.begin() + 1, 17) << std::endl;
+	constCopyVec.insert(constCopyVec.begin() + 5, 10, 59);
+	constCopyVec.insert(constCopyVec.begin(), fiveVec.begin(), fiveVec.end());
+	
+	for (ft::vector<int>::iterator it = constCopyVec.begin(); it != constCopyVec.end(); it++)
+	{ std::cout << *it << " "; }
+	std::cout << std::endl;
+
 
 	std::cout << zeroVec.max_size() << std::endl;
 	std::cout << fiveVec.max_size() << std::endl;
