@@ -73,7 +73,8 @@ namespace ft
 		}
 
 		template <class InputIterator>
-		vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type())
+		vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+				typename ft::enable_if<ft::is_vector_iterator<typename InputIterator::iterator_category>::value>::type* = nullptr)
 			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {
 			difference_type n = last - first;
 			if (n > 0) {
@@ -240,7 +241,8 @@ namespace ft
 		/* ************* */
 
 		template <class InputIterator>
-		void assign (InputIterator first, InputIterator last) {
+		void assign (InputIterator first, InputIterator last,
+				typename ft::enable_if<ft::is_vector_iterator<typename InputIterator::iterator_category>::value>::type* = nullptr) {
 			difference_type n = last - first;
 			if (n > this->max_size())
 				throw vector::_throw_length_error();
@@ -372,7 +374,7 @@ namespace ft
 
 		template <class InputIterator>
 		void insert (iterator position, InputIterator first, InputIterator last,
-				typename ft::enable_if<ft::is_vector_iterator<typename InputIterator::iterator_category>::value, InputIterator>::type* = nullptr) {
+				typename ft::enable_if<ft::is_vector_iterator<typename InputIterator::iterator_category>::value>::type* = nullptr) {
 			difference_type n = last - first;
 			if (n > 0) {
 				if (this->size() + n > this->max_size())

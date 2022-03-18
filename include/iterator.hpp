@@ -2,6 +2,7 @@
 # define ITERATOR_HPP
 
 #include <cstddef>
+#include "utils.hpp"
 
 namespace ft
 {
@@ -170,6 +171,17 @@ namespace ft
 
 
 
+	/* ********************** */
+	/*   is_vector_iterator   */
+	/* ********************** */
+
+	template<typename T>
+	struct is_vector_iterator : public false_type {};
+
+	template<>	struct is_vector_iterator<ft::random_access_iterator_tag> : public true_type {};
+
+
+
 	/* ******************* */
 	/*   Vector Iterator   */
 	/* ******************* */
@@ -193,7 +205,9 @@ namespace ft
 		vector_iterator() : i() {}
 		vector_iterator(const vector_iterator& vi) : i(vi.base()) {}
 		vector_iterator(iterator_type it) : i(it) {}
-		template <class Up> vector_iterator(const vector_iterator<Up>& u) : i(u.base()) {}
+		template <class Up> vector_iterator(const vector_iterator<Up>& u,
+				typename ft::enable_if<is_vector_iterator<typename Up::iterator_category>::value>::type* = nullptr)
+			: i(u.base()) {}
 
 		/* Assignment Operator */
 		vector_iterator& operator=(const vector_iterator& vi) {

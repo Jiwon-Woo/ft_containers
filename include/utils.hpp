@@ -1,8 +1,6 @@
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
-#include "iterator.hpp"
-
 namespace ft
 {
 
@@ -53,17 +51,6 @@ namespace ft
 	template<>	struct is_integral<unsigned long long> : public true_type {};
 	// template<>	struct is_integral<char16_t> : public true_type {};
 	// template<>	struct is_integral<char32_t> : public true_type {};
-
-
-
-	/* ********************** */
-	/*   is_vector_iterator   */
-	/* ********************** */
-
-	template<typename T>
-	struct is_vector_iterator : public false_type {};
-
-	template<>	struct is_vector_iterator<ft::random_access_iterator_tag> : public true_type {};
 
 
 
