@@ -1,7 +1,7 @@
 # compile flag
 CXX = clang++
-# CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-CXXFLAGS = -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+# CXXFLAGS = -std=c++98
 LFLAGS = -L$(LIB) -l$(LIBNAME)
 IFLAGS = -I$(INCLUDE)
 DFLAGS = -D$(MECRO)
@@ -11,8 +11,8 @@ MECRO = FT
 LIBNAME = stl
 
 # exec name
-# NAME = $(FT) $(STD)
-NAME = $(FT)
+NAME = $(FT) $(STD)
+# NAME = $(FT)
 FT = ft_container
 STD = std_container
 
@@ -23,19 +23,21 @@ OBJ = obj
 LIB = lib
 
 # file name
-MAIN = test.cpp
+MAIN = $(SRC)/main.cpp
+TEST = main test vector_test
 SOURCE = utils iterator vector
-OBJECT = $(foreach file, $(SOURCE), $(OBJ)/$(file).o)
+HEADER = $(foreach src, $(SOURCE), $(INCLUDE)/$(src).hpp)
+OBJECT = $(foreach file, $(TEST), $(OBJ)/$(file).o)
 LIBRARY = $(LIB)/lib$(LIBNAME).a
 
 # dependency
 $(NAME): $(MAIN) $(LIBRARY)
 	$(CXX) $(CXXFLAGS) $(LFLAGS) $(IFLAGS) $(DFLAGS) $(MAIN) -o $(FT)
-	# $(CXX) $(CXXFLAGS) $(LFLAGS) $(IFLAGS) $(MAIN) -o $(STD)
+	$(CXX) $(CXXFLAGS) $(LFLAGS) $(IFLAGS) $(MAIN) -o $(STD)
 $(LIBRARY): $(OBJECT)
 	@mkdir -p $(LIB)
 	ar rcs $(LIBRARY) $(OBJECT)
-$(OBJ)/%.o: $(SRC)/%.cpp $(INCLUDE)/%.hpp
+$(OBJ)/%.o: $(SRC)/%.cpp $(HEADER)
 	@mkdir -p $(OBJ)
 	$(CXX) $(CXXFLAGS) $(IFLAGS) -c $< -o $@
 

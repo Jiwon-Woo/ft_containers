@@ -1,6 +1,8 @@
 # 42
 .DS_Store
 .vscode
+lib/
+obj/
 
 # Prerequisites
 *.d
