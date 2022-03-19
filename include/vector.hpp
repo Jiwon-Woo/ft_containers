@@ -6,7 +6,6 @@
 #include <iostream>
 #include <stdexcept>
 #include "iterator.hpp"
-#include "utils.hpp"
 
 namespace ft
 {
@@ -462,7 +461,7 @@ namespace ft
 
 
 	/* ************************ */
-	/*   relational operators   */
+	/*   Relational Operators   */
 	/* ************************ */
 
 	template <class T, class Alloc>

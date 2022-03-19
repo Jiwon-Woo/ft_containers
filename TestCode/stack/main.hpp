@@ -7,8 +7,7 @@
 #include <stack>
 #include <vector>
 #include <deque>
-#include "../../stack.hpp"
-#include "../../vector.hpp"
+#include "../../include/stack.hpp"
 
 #define ANSI_COLOR_RED "\x1b[31m"
 #define ANSI_COLOR_GREEN "\x1b[32m"
