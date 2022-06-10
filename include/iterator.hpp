@@ -2,6 +2,7 @@
 # define ITERATOR_HPP
 
 #include <cstddef>
+#include <iterator>
 #include "utils.hpp"
 
 namespace ft
@@ -105,12 +106,12 @@ namespace ft
 		template <class Up> reverse_iterator(const reverse_iterator<Up>& u) : current(u.base()) {}
 
 		/* Assignment Operator */
-		template <class Up> reverse_iterator& operator=(const reverse_iterator<Up>& u) {
-			if (this != &u) {
-				this->current = u.base(); 
-			}
-			return *this;
-		}
+		// template <class Up> reverse_iterator& operator=(const reverse_iterator<Up>& u) {
+		// 	if (this != &u) {
+		// 		this->current = u.base(); 
+		// 	}
+		// 	return *this;
+		// }
 
 		/* Destrcutor */
 		virtual ~reverse_iterator() {}
@@ -133,40 +134,40 @@ namespace ft
 	};
 
 	/* Non-member function Operators */
-	template <class Iterator>
-	bool operator==(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	template <typename Iter1, typename Iter2>
+	bool operator==(const reverse_iterator<Iter1>& lhs, const reverse_iterator<Iter2>& rhs)
 	{ return lhs.base() == rhs.base(); }
 
-	template <class Iterator>
-	bool operator!=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	template <typename Iter1, typename Iter2>
+	bool operator!=(const reverse_iterator<Iter1>& lhs, const reverse_iterator<Iter2>& rhs)
 	{ return lhs.base() != rhs.base(); }
 
-	template <class Iterator>
-	bool operator<(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	template <typename Iter1, typename Iter2>
+	bool operator<(const reverse_iterator<Iter1>& lhs, const reverse_iterator<Iter2>& rhs)
 	{ return lhs.base() > rhs.base(); }
 
-	template <class Iterator>
-	bool operator<=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	template <typename Iter1, typename Iter2>
+	bool operator<=(const reverse_iterator<Iter1>& lhs, const reverse_iterator<Iter2>& rhs)
 	{ return lhs.base() >= rhs.base(); }
 
-	template <class Iterator>
-	bool operator>(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	template <typename Iter1, typename Iter2>
+	bool operator>(const reverse_iterator<Iter1>& lhs, const reverse_iterator<Iter2>& rhs)
 	{ return lhs.base() < rhs.base(); }
 
-	template <class Iterator>
-	bool operator>=(const reverse_iterator<Iterator>& lhs, const reverse_iterator<Iterator>& rhs)
+	template <typename Iter1, typename Iter2>
+	bool operator>=(const reverse_iterator<Iter1>& lhs, const reverse_iterator<Iter2>& rhs)
 	{ return lhs.base() <= rhs.base(); }
 
-	template <class Iterator>
-	reverse_iterator<Iterator> operator+(
+	template <typename Iterator>
+	reverse_iterator<Iterator> operator+ (
 			typename reverse_iterator<Iterator>::difference_type n,
 			const reverse_iterator<Iterator>& rev_it)
 	{ return reverse_iterator<Iterator>(rev_it.base() - n); }
 
-	template <class Iterator>
-	typename reverse_iterator<Iterator>::difference_type operator- (
-			const reverse_iterator<Iterator>& lhs,
-			const reverse_iterator<Iterator>& rhs)
+	template <typename Iter1, typename Iter2>
+	typename reverse_iterator<Iter1>::difference_type operator- (
+			const reverse_iterator<Iter1>& lhs,
+			const reverse_iterator<Iter2>& rhs)
 	{ return rhs.base() - lhs.base(); }
 
 
@@ -179,6 +180,9 @@ namespace ft
 	struct is_vector_iterator : public false_type {};
 
 	template<>	struct is_vector_iterator<ft::random_access_iterator_tag> : public true_type {};
+	template<>	struct is_vector_iterator<std::random_access_iterator_tag> : public true_type {};
+	template<>	struct is_vector_iterator<ft::bidirectional_iterator_tag> : public true_type {};
+	template<>	struct is_vector_iterator<std::bidirectional_iterator_tag> : public true_type {};
 
 
 
@@ -190,11 +194,11 @@ namespace ft
 	class vector_iterator
 	{
 	public:
-		typedef std::ptrdiff_t            	difference_type;
-		typedef T                         	value_type;
-		typedef T*                        	pointer;
-		typedef T&                        	reference;
-		typedef random_access_iterator_tag	iterator_category;
+		typedef std::ptrdiff_t                	difference_type;
+		typedef T                             	value_type;
+		typedef T*                            	pointer;
+		typedef T&                            	reference;
+		typedef ft::random_access_iterator_tag	iterator_category;
 
 	private:
 		pointer i;
