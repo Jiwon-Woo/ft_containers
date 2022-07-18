@@ -16,6 +16,7 @@ namespace ft
 	struct tree_node
 	{
 		typedef T        	node_value_type;
+		typedef T*       	node_value_type_pointer;
 		typedef tree_node	node;
 		typedef node*    	node_pointer;
 

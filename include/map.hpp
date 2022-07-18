@@ -13,21 +13,22 @@ namespace ft
 	class map
 	{
 	public:
-		typedef Key                                          	key_type;
-		typedef T                                            	mapped_type;
-		typedef ft::pair<const key_type, mapped_type>        	value_type;
-		typedef Compare                                      	key_compare;
-		typedef Alloc                                        	allocator_type;
-		typedef std::ptrdiff_t                               	difference_type;
-		typedef std::size_t                                  	size_type;
-		typedef typename allocator_type::reference           	reference;
-		typedef typename allocator_type::const_reference     	const_reference;
-		typedef typename allocator_type::pointer             	pointer;
-		typedef typename allocator_type::const_pointer       	const_pointer;
-		typedef ft::map_iterator<value_type>                 	iterator;
-		typedef ft::map_iterator<const value_type>           	const_iterator;
-		typedef typename ft::reverse_iterator<iterator>      	reverse_iterator;
-		typedef typename ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+		typedef Key                                                         	key_type;
+		typedef T                                                           	mapped_type;
+		typedef ft::pair<const key_type, mapped_type>                       	value_type;
+		typedef Compare                                                     	key_compare;
+		typedef Alloc                                                       	allocator_type;
+		typedef std::ptrdiff_t                                              	difference_type;
+		typedef std::size_t                                                 	size_type;
+		typedef typename allocator_type::reference                          	reference;
+		typedef typename allocator_type::const_reference                    	const_reference;
+		typedef typename allocator_type::pointer                            	pointer;
+		typedef typename allocator_type::const_pointer                      	const_pointer;
+		typedef typename ft::tree<value_type, value_compare, allocator_type>	tree_type;
+		typedef ft::map_iterator<typename tree_type::iterator>              	iterator;
+		typedef ft::map_iterator<typename tree_type::const_iterator>        	const_iterator;
+		typedef typename ft::reverse_iterator<iterator>                     	reverse_iterator;
+		typedef typename ft::reverse_iterator<const_iterator>               	const_reverse_iterator;
 
 		class value_compare : public std::binary_function<value_type, value_type, bool>
 		{
@@ -46,7 +47,7 @@ namespace ft
 		};
 
 	private:
-		ft::tree<value_type, value_compare, allocator_type> tree;
+		tree_type tree;
 	
 	public:
 		// Constructor:
