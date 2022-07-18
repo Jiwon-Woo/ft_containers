@@ -351,77 +351,83 @@ namespace ft
 	/*   Tree Iterator   */
 	/* ***************** */
 
-	template <class _Tp, class _NodePtr, class _DiffType>
-	class _LIBCPP_TEMPLATE_VIS __tree_iterator
+	template <class T, class NodeType, class DiffType = std::ptrdiff_t>
+	class tree_iterator
 	{
-		typedef __tree_node_types<_NodePtr>                     _NodeTypes;
-		typedef _NodePtr                                        __node_pointer;
-		typedef typename _NodeTypes::__node_base_pointer        __node_base_pointer;
-		typedef typename _NodeTypes::__end_node_pointer         __end_node_pointer;
-		typedef typename _NodeTypes::__iter_pointer             __iter_pointer;
-		typedef pointer_traits<__node_pointer> __pointer_traits;
+		typedef NodeType                        	node_type;
+		typedef typename node_type::node_pointer	node_pointer;
+		// typedef typename node_pointer           	iter_pointer;
 
-		__iter_pointer __ptr_;
+		node_pointer __ptr_;
+
+	private:
+		tree_next_iter(node_pointer x)
+		{
+			if (x->right != nullptr) { // 큰 집합들 중 가장 작은 것
+				while (x->left != nullptr)
+					x = x->left;
+				return x;
+			}
+			while (x != x->parent->left) // x가 왼쪽 자식이 될때까지 거슬러 올라가서
+				x = x->parent;
+			return x->parent; // 그 부모를 반환
+		}
+
+		tree_prev_iter(node_pointer x)
+		{
+			if (x->left != nullptr) {
+				while (x->right != nullptr)
+					x = x->right;
+				return x;
+			}
+			while (x == x->parent->left)
+				x = x->parent;
+			return x->parent;
+		}
 
 	public:
-		typedef bidirectional_iterator_tag                     iterator_category;
-		typedef _Tp                                            value_type;
-		typedef _DiffType                                      difference_type;
-		typedef value_type&                                    reference;
-		typedef typename _NodeTypes::__node_value_type_pointer pointer;
+		typedef bidirectional_iterator_tag	iterator_category;
+		typedef T                         	value_type;
+		typedef DiffType                  	difference_type;
+		typedef value_type&               	reference;
+		typedef value_type*               	pointer;
 
-		_LIBCPP_INLINE_VISIBILITY __tree_iterator() _NOEXCEPT
-	#if _LIBCPP_STD_VER > 11
-		: __ptr_(nullptr)
-	#endif
-		{}
+		tree_iterator() : __ptr_(nullptr) {}
+		tree_iterator(const tree_iterator& ti) : __ptr_(ti.get_np()) {}
+		explicit tree_iterator(node_pointer p) : __ptr_(p) {}
 
-		_LIBCPP_INLINE_VISIBILITY reference operator*() const
-			{return __get_np()->__value_;}
-		_LIBCPP_INLINE_VISIBILITY pointer operator->() const
-			{return pointer_traits<pointer>::pointer_to(__get_np()->__value_);}
+		reference operator*() const {return __ptr_->value;}
+		pointer operator->() const {return &(this->operator*());}
 
-		_LIBCPP_INLINE_VISIBILITY
-		__tree_iterator& operator++() {
-		__ptr_ = static_cast<__iter_pointer>(
-			__tree_next_iter<__end_node_pointer>(static_cast<__node_base_pointer>(__ptr_)));
-		return *this;
+		tree_iterator& operator++() {
+			__ptr_ = tree_next_iter(__ptr_);
+			return *this;
 		}
-		_LIBCPP_INLINE_VISIBILITY
-		__tree_iterator operator++(int)
-			{__tree_iterator __t(*this); ++(*this); return __t;}
-
-		_LIBCPP_INLINE_VISIBILITY
-		__tree_iterator& operator--() {
-		__ptr_ = static_cast<__iter_pointer>(__tree_prev_iter<__node_base_pointer>(
-			static_cast<__end_node_pointer>(__ptr_)));
-		return *this;
+		
+		tree_iterator operator++(int) {
+			tree_iterator tmp(*this);
+			++(*this);
+			return tmp;
 		}
-		_LIBCPP_INLINE_VISIBILITY
-		__tree_iterator operator--(int)
-			{__tree_iterator __t(*this); --(*this); return __t;}
 
-		friend _LIBCPP_INLINE_VISIBILITY
-			bool operator==(const __tree_iterator& __x, const __tree_iterator& __y)
+		tree_iterator& operator--() {
+			__ptr_ = tree_prev_iter(__ptr_);
+			return *this;
+		}
+
+		tree_iterator operator--(int) {
+			tree_iterator tmp(*this);
+			--(*this);
+			return tmp;
+		}
+
+		friend bool operator==(const tree_iterator& __x, const tree_iterator& __y)
 			{return __x.__ptr_ == __y.__ptr_;}
-		friend _LIBCPP_INLINE_VISIBILITY
-			bool operator!=(const __tree_iterator& __x, const __tree_iterator& __y)
+		friend bool operator!=(const tree_iterator& __x, const tree_iterator& __y)
 			{return !(__x == __y);}
 
 	private:
-		_LIBCPP_INLINE_VISIBILITY
-		explicit __tree_iterator(__node_pointer __p) _NOEXCEPT : __ptr_(__p) {}
-		_LIBCPP_INLINE_VISIBILITY
-		explicit __tree_iterator(__end_node_pointer __p) _NOEXCEPT : __ptr_(__p) {}
-		_LIBCPP_INLINE_VISIBILITY
-		__node_pointer __get_np() const { return static_cast<__node_pointer>(__ptr_); }
-		template <class, class, class> friend class __tree;
-		template <class, class, class> friend class _LIBCPP_TEMPLATE_VIS __tree_const_iterator;
-		template <class> friend class _LIBCPP_TEMPLATE_VIS __map_iterator;
-		template <class, class, class, class> friend class _LIBCPP_TEMPLATE_VIS map;
-		template <class, class, class, class> friend class _LIBCPP_TEMPLATE_VIS multimap;
-		template <class, class, class> friend class _LIBCPP_TEMPLATE_VIS set;
-		template <class, class, class> friend class _LIBCPP_TEMPLATE_VIS multiset;
+		node_pointer get_np() const { return __ptr_; }
 	};
 
 }
