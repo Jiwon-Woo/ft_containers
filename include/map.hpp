@@ -7,8 +7,7 @@
 
 namespace ft
 {
-	
-template < typename Key, typename T,
+	template < typename Key, typename T,
 		typename Compare = std::less<Key>,
 		typename Alloc = std::allocator<ft::pair<const Key, T> > >
 	class map
@@ -47,9 +46,10 @@ template < typename Key, typename T,
 		};
 
 	private:
-		tree<value_type, value_compare, allocator_type> tree;
+		ft::tree<value_type, value_compare, allocator_type> tree;
 	
 	public:
+		// Constructor:
 		explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type());
 		template <class InputIterator>
 		map (InputIterator first, InputIterator last,
@@ -57,9 +57,57 @@ template < typename Key, typename T,
 			const allocator_type& alloc = allocator_type());
 		map (const map& x);
 
+		// Destructor:
+		~map();
+
+		// Assignment:
 		map& operator=(map const &m);
 
-		~map();
+		// iterators:
+		iterator begin();
+		const_iterator begin() const;
+		iterator end();
+		const_iterator end()   const;
+
+		reverse_iterator rbegin();
+		const_reverse_iterator rbegin() const;
+		reverse_iterator rend();
+		const_reverse_iterator rend()   const;
+
+		// capacity:
+		bool      empty()    const noexcept;
+		size_type size()     const noexcept;
+		size_type max_size() const noexcept;
+
+		// element access:
+		mapped_type& operator[](const key_type& k);
+
+		// modifiers:
+		pair<iterator,bool> insert (const value_type& val);
+		iterator insert (iterator position, const value_type& val);
+		template <class InputIterator>
+		void insert (InputIterator first, InputIterator last);
+		void erase (iterator position);
+		size_type erase (const key_type& k);
+		void erase (iterator first, iterator last);
+		void clear();
+
+		// observers:
+		// value_compare value_comp() const;
+		// key_compare    key_comp()      const;
+
+		// map operations:
+		iterator find(const key_type& k);
+		const_iterator find(const key_type& k) const;
+		size_type count (const key_type& k) const;
+		iterator lower_bound (const key_type& k);
+		const_iterator lower_bound (const key_type& k) const;
+		iterator lower_bound (const key_type& k);
+		const_iterator lower_bound (const key_type& k) const;
+		iterator upper_bound (const key_type& k);
+		const_iterator upper_bound (const key_type& k) const;
+		pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
+		pair<iterator,iterator>             equal_range (const key_type& k);
 	};
 }
 
