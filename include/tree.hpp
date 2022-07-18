@@ -46,9 +46,6 @@ public:
 
 private:
 	node_pointer	root;
-    // iter_pointer	begin_node;
-    // __compressed_pair<__end_node_t, __node_allocator>  __pair1_;
-    // __compressed_pair<size_type, value_compare>        __pair3_;
 
 };
 
