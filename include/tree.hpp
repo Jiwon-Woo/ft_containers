@@ -102,13 +102,51 @@ namespace ft
 
 		size_type& size() {return _size;}
 		const size_type& size() const {return _size;}
-		size_type max_size()
-		{return _VSTD::min<size_type>(
-				__node_traits::max_size(__node_alloc()),
-				numeric_limits<difference_type >::max());}
 		value_compare& value_comp() {return _value_comp;}
 		const value_compare& value_comp() const {return _value_comp;}
 		void clear();
+
+
+		// tree 삽입 삭제 함수
+		ft::pair<iterator,bool> insert(const value_type& val)
+		{
+			node_pointer parent = NULL;
+			node_pointer current = _root;
+			while (current && val.first != (current->value).first)
+			{
+				if (_value_comp(val, current->value)) {
+					parent = current;
+					current = current->left;
+				} else {
+					parent = current;
+					current = current->right;
+				}
+			}
+
+			if (current) {
+				_alloc.destroy(current);
+			} else {
+				current = _alloc.allocate(1);
+			}
+			_alloc.construct(current, node_type(val));
+			current->set_parent(parent);
+			current->set_right(nullptr);
+			current->set_left(nullptr);
+			_size++;
+			return ft::pair(iterator(current), true);
+		}
+
+		iterator insert(iterator position, const value_type& val);
+
+		iterator erase(const_iterator p);
+		iterator erase(const_iterator first, const_iterator last);
+		template <class Key>
+		iterator erase (const Key& k);
+
+		template <class _Key>
+		iterator find(const _Key& __v);
+		template <class _Key>
+		const_iterator find(const _Key& __v) const;
 
 	};
 
