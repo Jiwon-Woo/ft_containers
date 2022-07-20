@@ -317,6 +317,7 @@ namespace ft
 		/* Constructors */
 		map_iterator() : i(nullptr) {}
 		map_iterator(TreeIterator ti) : i(ti) {}
+		map_iterator(const map_iterator& mi) : i(mi.i) {}
 
 		// /* Conversion operator */
 		// operator map_iterator<const value_type> () const { 
