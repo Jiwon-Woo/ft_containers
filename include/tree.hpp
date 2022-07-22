@@ -127,16 +127,26 @@ namespace ft
 				_alloc.destroy(current);
 			} else {
 				current = _alloc.allocate(1);
+				_size++;
 			}
 			_alloc.construct(current, node_type(val));
 			current->set_parent(parent);
 			current->set_right(nullptr);
 			current->set_left(nullptr);
-			_size++;
 			return ft::pair(iterator(current), true);
 		}
 
-		iterator insert(iterator position, const value_type& val);
+		iterator insert(iterator position, const value_type& val)
+		{
+			if (position->get_np()) {
+				_alloc.destroy(position->get_np());
+			} else {
+				position->get_np() = _alloc.allocate(1);
+				_size++;
+			}
+			_alloc.construct(position->get_np(), node_type(val));
+			return position;
+		}
 
 		iterator erase(const_iterator p);
 		iterator erase(const_iterator first, const_iterator last);
