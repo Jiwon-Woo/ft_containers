@@ -23,9 +23,9 @@ OBJ = obj
 LIB = lib
 
 # file name
-MAIN = $(SRC)/main.cpp
-TEST = main test vector_test
-SOURCE = utils iterator vector
+MAIN = $(SRC)/map_test.cpp
+TEST = map_test
+SOURCE = utils iterator vector tree
 HEADER = $(foreach src, $(SOURCE), $(INCLUDE)/$(src).hpp)
 OBJECT = $(foreach file, $(TEST), $(OBJ)/$(file).o)
 LIBRARY = $(LIB)/lib$(LIBNAME).a

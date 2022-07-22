@@ -24,7 +24,6 @@ namespace ft
 		typedef typename allocator_type::const_reference                    	const_reference;
 		typedef typename allocator_type::pointer                            	pointer;
 		typedef typename allocator_type::const_pointer                      	const_pointer;
-		typedef typename ft::tree<value_type, value_compare, allocator_type>	tree_type;
 		typedef ft::map_iterator<typename tree_type::iterator>              	iterator;
 		typedef ft::map_iterator<typename tree_type::const_iterator>        	const_iterator;
 		typedef typename ft::reverse_iterator<iterator>                     	reverse_iterator;
@@ -45,6 +44,8 @@ namespace ft
 			bool operator()(const value_type& x, const value_type& y) const
 			{ return comp(x.first, y.first); } // value_type 형태(pair)의 compare -> 마찬가지로 key로 비교함
 		};
+		
+		typedef typename ft::tree<value_type, value_compare, allocator_type>	tree_type;
 
 	private:
 		tree_type tree;
