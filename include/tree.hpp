@@ -119,6 +119,13 @@ namespace ft
 
 		size_type& size() {return _size;}
 		const size_type& size() const {return _size;}
+		size_type max_size() const {
+			return std::min<size_type>(
+				std::numeric_limits<size_type>::max() / sizeof(value_type),
+				static_cast<size_type>(numeric_limits<difference_type>::max())
+			);
+		}
+		bool empty() const { return _size == 0; }
 		value_compare& value_comp() {return _value_comp;}
 		const value_compare& value_comp() const {return _value_comp;}
 		
