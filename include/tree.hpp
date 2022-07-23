@@ -5,8 +5,9 @@
 #include <memory.h>
 #include "utils.hpp"
 
-#define LEFT 0
-#define RIGHT 1
+#define NONE 0
+#define LEFT 1
+#define RIGHT 2
 
 namespace ft
 {
@@ -84,7 +85,7 @@ namespace ft
 		node_pointer  	_root;
 		node_pointer  	_begin_node;
 		node_pointer  	_end_node;
-		node_pointer  	_virtual_root;
+		node_pointer  	_super_root;	// 가상 루트
 		allocator_type	_alloc;
 		size_type     	_size;
 		value_compare 	_value_comp;
@@ -92,20 +93,29 @@ namespace ft
 	public:
 
 		tree(const value_compare& comp = value_compare(), const allocator_type& alloc = allocator_type())
-			: _root(NULL), _alloc(alloc), _size(0), _value_comp(comp)
+			: _root(NULL), _begin_node(NULL), _end_node(NULL), _alloc(alloc), _size(0), _value_comp(comp)
 		{
-			_end_node = alloc.allocate(1);
-			alloc.construct(_end_node, value_type());
-			_begin_node = _end_node;
-			_end_node->parent = _root;
-			_end_node->left = _root;
-			_end_node->right = NULL;
+			_super_root = alloc.allocate(1);
+			alloc.construct(_super_root, value_type());
+			_super_root->parent = NULL;
+			_super_root->left = NULL;
+			_super_root->right = NULL;
 		}
 
-		iterator begin()  {return iterator(_begin_node);}
-		const_iterator begin() const {return const_iterator(_begin_node);}
-		iterator end() {return iterator(_end_node);}
-		const_iterator end() const {return const_iterator(_end_node);}
+		iterator begin() {
+			if(_size == 0)
+				return iterator(_super_root);
+			return iterator(_begin_node);
+		}
+
+		const_iterator begin() const {
+			if(_size == 0)
+				return const_iterator(_super_root);
+			return const_iterator(_begin_node);
+		}
+		
+		iterator end() {return iterator(_super_root);}
+		const_iterator end() const {return const_iterator(_super_root);}
 
 		size_type& size() {return _size;}
 		const size_type& size() const {return _size;}
@@ -113,38 +123,26 @@ namespace ft
 		const value_compare& value_comp() const {return _value_comp;}
 		void clear();
 
-		node_pointer allocate_node(const value_type& val)
+		void set_root(const value_type& val)
 		{
-			node_pointer ptr = _alloc.allocate(1);
-			_alloc.construct(ptr, node_type(val));
-			return ptr;
+			_root = _alloc.allocate(1);
+			_alloc.construct(_root, node_type(val));
+			_super_root->left = _root;
+			_super_root->right = _root;
+			_root->parent = _super_root;
+			_size++;
 		}
 
-		node_pointer allocate_node(const node_type& node)
+		ft::pair<node_pointer, int> find_insert_position(node_pointer start, const value_type& val)
 		{
-			node_pointer ptr = _alloc.allocate(1);
-			_alloc.construct(ptr, node_type(node));
-			return ptr;
-		}
-
-		void set_node(node_pointer node, node_pointer parent, node_pointer left, node_pointer right)
-		{
-			node->set_parent(parent);
-			node->set_left(left);
-			node->set_right(right);
-		}
-
-		// tree 삽입 삭제 함수
-		ft::pair<iterator,bool> insert(const value_type& val)
-		{
-			node_pointer parent = NULL;
-			node_pointer current = _root;
-			bool child_flag;
+			node_pointer current = start;
+			node_pointer parent = start->parent;
+			int child_flag;
 
 			while (current)
 			{
 				if (val.first == (current->value).first) {
-					return ft::pair<iterator,bool>(iterator(current), false);
+					return ft::pair<node_pointer,int>(current, NONE);
 				}
 				parent = current;
 				if (_value_comp(val, current->value)) {
@@ -155,109 +153,172 @@ namespace ft
 					child_flag = RIGHT;
 				}
 			}
+
+			if (child_flag == LEFT)
+				return ft::pair<node_pointer,int>(parent, LEFT);
+			return ft::pair<node_pointer,int>(parent, RIGHT);
+		}
+
+		// tree 삽입 삭제 함수
+		ft::pair<iterator, bool> insert(const value_type& val)
+		{
+			if (_size == 0) {
+				set_root(val);
+				_begin_node = _end_node = _root;
+				return ft::pair<iterator,bool>(iterator(_root), true);
+			}
+
+			ft::pair<node_pointer, int> pos = find_insert_position(_root, val);
+			if (pos.second == NONE)
+				return ft::pair<iterator,bool>(iterator(pos.first), false);
 
 			node_pointer new_node = allocate_node(val);
-			new_node->set_node(parent, NULL, NULL);
-			if (parent) {
-				if (child_flag == LEFT) {
-					parent->set_left(new_node);
-				} else {
-					parent->set_right(new_node);
-				}
-			}
-			current = new_node;
-			_size++;
-			return ft::pair<iterator,bool>(iterator(current), true);
-		}
-
-		iterator insert(iterator position, const value_type& val)
-		{
-			node_pointer parent = NULL;
-			node_pointer current = _root;
-			bool child_flag;
-
-			(void)position;
-			while (current && val.first != (current->value).first)
-			{
-				parent = current;
-				if (_value_comp(val, current->value)) {
-					current = current->left;
-					child_flag = LEFT;
-				} else {
-					current = current->right;
-					child_flag = RIGHT;
-				}
-			}
-
-			if (current) {
-				return iterator(current);
+			new_node->set_node(pos.second, NULL, NULL);
+			if (pos.first == LEFT) {
+				(pos.second)->set_left(new_node);
 			} else {
-				node_pointer new_node = allocate_node(val);
-				new_node->set_node(parent, NULL, NULL);
-				if (parent) {
-					if (child_flag == LEFT) {
-						parent->set_left(new_node);
-					} else {
-						parent->set_right(new_node);
-					}
-				}
-				current = new_node;
-				_size++;
-				return iterator(current);
+				(pos.second)->set_right(new_node);
 			}
+			_size++;
+			return ft::pair<iterator,bool>(iterator(new_node), true);
 		}
 
-		iterator erase(const_iterator p);
+		ft::pair<iterator, bool> insert(iterator position, const value_type& val)
+		{
+			if (_size == 0) {
+				set_root(val);
+				_begin_node = _end_node = _root;
+				return ft::pair<iterator,bool>(iterator(_root), true);
+			}
+			if ((*position).first == val.fisrt)
+				return ft::pair<iterator,bool>(position, false);
+			return insert(val);
+		}
+
+		size_type get_child_number(node_pointer ptr)
+		{
+			size_type child = 0;
+
+			if (ptr->left)
+				child++;
+			if (ptr->right)
+				child++;
+			return child;
+		}
+
+		size_type get_node_direction(node_pointer ptr)
+		{
+			if (!ptr)
+				return NONE;
+			if (ptr == ptr->parent->left)
+				return LEFT;
+			if (ptr == ptr->parent->right)
+				return RIGHT;
+			return NONE;
+		}
+
+		void delete_leaf_node(node_pointer ptr)
+		{
+			node_pointer parent = ptr->parent;
+			size_type direction = get_node_direction(ptr);
+
+			_alloc.destroy(ptr);
+			_alloc.deallocate(ptr, 1);
+			if (direction == LEFT)
+				parent->left = NULL;
+			if (direction == RIGHT)
+				parent->right = NULL;
+		}
+
+		void delete_node_with_child(node_pointer ptr)
+		{
+			node_pointer parent = ptr->parent;
+			size_type direction = get_node_direction(ptr);
+			node_pointer child = current->left;
+			
+			if (!current->left)
+				child = current->right;
+			
+			_alloc.destroy(ptr);
+			_alloc.deallocate(ptr, 1);
+			if (direction == LEFT)
+				parent->left = child;
+			if (direction == RIGHT)
+				parent->right = child;
+		}
+
+		void delete_node_with_children(node_pointer ptr)
+		{
+			node_pointer prev_ptr = tree_prev_iter(ptr);
+
+			ptr->set_value(prev_ptr->value);
+			delete_leaf_node(prev_ptr);
+		}
+
+		bool erase(iterator p)
+		{
+			if (p == end())
+				return false;
+			
+			node_pointer current = p.get_np();
+			size_type child_num = get_child_number(current);
+
+			if (child_num == 0) {
+				delete_leaf_node(current);
+			} else if (child_num == 1) {
+				delete_node_with_child(current);
+			} else {
+				delete_node_with_children(current);
+			}
+			--_size;
+			return true;
+		}
 
 		template <class Key>
-		iterator erase (const Key& k)
+		bool erase (const Key& k)
 		{
-			iterator it = find(k);
-
-			if (*it)
-
+			return erase(find(k));
 		}
+
 
 		template <class Key>
 		iterator find(const Key& k)
 		{
+			if (_size == 0) {
+				return end();
+			}
 			node_pointer current = _root;
-
-			while (current && k != (current->value).first)
+			while (current && current != _super_root)
 			{
+				if (k == (current->value).first)
+					return iterator(current);
 				if (k < (current->value).first) {
 					current = current->left;
 				} else {
 					current = current->right;
 				}
 			}
-
-			if (!current || current->left == _root) {
-				return iterator(_end_node);
-			} else {
-				return iterator(current);
-			}
+			return end();
 		}
 
 		template <class Key>
 		const_iterator find(const Key& k) const
 		{
+			if (_size == 0) {
+				return end();
+			}
 			node_pointer current = _root;
-
-			while (current && k != (current->value).first)
+			while (current && current != _super_root)
 			{
+				if (k == (current->value).first)
+					return const_iterator(current);
 				if (k < (current->value).first) {
 					current = current->left;
 				} else {
 					current = current->right;
 				}
 			}
-
-			if (!current || current->left == _root) {
-				return const_iterator(_end_node);
-			} else {
-				return const_iterator(current);
-			}
+			return end();
 		}
 
 	};
