@@ -121,7 +121,23 @@ namespace ft
 		const size_type& size() const {return _size;}
 		value_compare& value_comp() {return _value_comp;}
 		const value_compare& value_comp() const {return _value_comp;}
-		void clear();
+		
+
+		void destroy(node_pointer ptr)
+		{
+			if (ptr)
+			{
+				destroy(ptr->left);
+				destroy(ptr->right);
+				_alloc.destroy(ptr);
+				_alloc.deallocate(ptr, 1);
+			}
+		}
+
+		void clear()
+		{
+			destroy(_root);
+		}
 
 		void set_root(const value_type& val)
 		{
@@ -288,7 +304,7 @@ namespace ft
 				return end();
 			}
 			node_pointer current = _root;
-			while (current && current != _super_root)
+			while (current)
 			{
 				if (k == (current->value).first)
 					return iterator(current);
@@ -308,7 +324,7 @@ namespace ft
 				return end();
 			}
 			node_pointer current = _root;
-			while (current && current != _super_root)
+			while (current)
 			{
 				if (k == (current->value).first)
 					return const_iterator(current);
@@ -319,6 +335,12 @@ namespace ft
 				}
 			}
 			return end();
+		}
+
+		template <class Key>
+		size_type count (const Key& k) const
+		{
+			return !(find(k) == end());
 		}
 
 	};
