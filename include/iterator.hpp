@@ -361,31 +361,6 @@ namespace ft
 
 		node_pointer ptr;
 
-	private:
-		tree_next_iter(node_pointer x)
-		{
-			if (x->right != nullptr) { // 큰 집합들 중 가장 작은 것
-				while (x->left != nullptr)
-					x = x->left;
-				return x;
-			}
-			while (x != x->parent->left) // x가 왼쪽 자식이 될때까지 거슬러 올라가서
-				x = x->parent;
-			return x->parent; // 그 부모를 반환
-		}
-
-		tree_prev_iter(node_pointer x)
-		{
-			if (x->left != nullptr) {
-				while (x->right != nullptr)
-					x = x->right;
-				return x;
-			}
-			while (x == x->parent->left)
-				x = x->parent;
-			return x->parent;
-		}
-
 	public:
 		typedef bidirectional_iterator_tag	iterator_category;
 		typedef T                         	value_type;
@@ -420,6 +395,32 @@ namespace ft
 		{return !(x == y);}
 
 		node_pointer get_np() const { return ptr; }
+
+		node_pointer tree_next_iter(node_pointer x)
+		{
+			if (x->right != nullptr) { // 큰 집합들 중 가장 작은 것
+				x = x->right;
+				while (x->left != nullptr)
+					x = x->left;
+				return x;
+			}
+			while (x != x->parent->left) // x가 왼쪽 자식이 될때까지 거슬러 올라가서
+				x = x->parent;
+			return x->parent; // 그 부모를 반환
+		}
+
+		node_pointer tree_prev_iter(node_pointer x)
+		{
+			if (x->left != nullptr) {
+				x = x->left;
+				while (x->right != nullptr)
+					x = x->right;
+				return x;
+			}
+			while (x != x->parent->right)
+				x = x->parent;
+			return x->parent;
+		}
 	};
 
 }
