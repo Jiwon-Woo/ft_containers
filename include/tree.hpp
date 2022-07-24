@@ -350,6 +350,93 @@ namespace ft
 			return !(find(k) == end());
 		}
 
+		template <class Key>
+		iterator lower_bound(const Key& v)
+		{
+			node_pointer current = _root;
+			node_pointer result = _super_root;
+
+			while (current != nullptr)
+			{
+				if (!_value_comp(current->value, v))
+				{
+					result = current;
+					current = current->left;
+				}
+				else
+					current = current->right;
+			}
+			return iterator(result);
+		}
+
+		template <class Key>
+		const_iterator lower_bound(const Key& v) const
+		{
+			node_pointer current = _root;
+			node_pointer result = _super_root;
+
+			while (current != nullptr)
+			{
+				if (!_value_comp(current->value, v))
+				{
+					result = current;
+					current = current->left;
+				}
+				else
+					current = current->right;
+			}
+			return const_iterator(result);
+		}
+
+		template <class Key>
+		iterator upper_bound(const Key& v)
+		{
+			node_pointer current = _root;
+			node_pointer result = _super_root;
+
+			while (current != nullptr)
+			{
+				if (_value_comp(v, current->value))
+				{
+					result = current;
+					current = current->left;
+				}
+				else
+					current = current->right;
+			}
+			return iterator(result);
+		}
+
+		template <class Key>
+		const_iterator upper_bound(const Key& v) const
+		{
+			node_pointer current = _root;
+			node_pointer result = _super_root;
+
+			while (current != nullptr)
+			{
+				if (_value_comp(v, current->value))
+				{
+					result = current;
+					current = current->left;
+				}
+				else
+					current = current->right;
+			}
+			return const_iterator(result);
+		}
+
+		template <class Key>
+		ft::pair<iterator, iterator> equal_range (const Key& k)
+		{
+			return ft::pair<iterator, iterator>(lower_bound(k), upper_bound(k));
+		}
+
+		ft::pair<const_iterator, const_iterator> equal_range (const key_type& k) const
+		{
+			return ft::pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k));
+		}
+
 	};
 
 }
