@@ -86,16 +86,70 @@ namespace ft
 
 
 	public:
-
+	
+		/* ************* */
+		/*   Construct   */
+		/* ************* */
+		
 		tree(const value_compare& comp = value_compare(), const allocator_type& alloc = allocator_type())
 			: _root(NULL), _begin_node(NULL), _end_node(NULL), _alloc(alloc), _size(0), _value_comp(comp)
 		{
-			_super_root = alloc.allocate(1);
-			alloc.construct(_super_root, value_type());
+			_super_root = _alloc.allocate(1);
+			_alloc.construct(_super_root, node_type());
 			_super_root->parent = NULL;
 			_super_root->left = NULL;
 			_super_root->right = NULL;
 		}
+
+		tree(const tree& t)
+		{
+			_super_root = _alloc.allocate(1);
+			_alloc.construct(_super_root, node_type());
+			_root = copy_tree(t.get_root(), _super_root);
+			_super_root->left = _root;
+			_super_root->right = _root;
+			if (_root) {
+				_root->parent = _super_root;
+			}
+		}
+
+
+
+		/* ************** */
+		/*   Destructor   */
+		/* ************** */
+
+		~tree() {
+			clear();
+			_alloc.destory(_super_root);
+			_alloc.deallocate(_super_root, 1);
+			_super_root = _root = _begin_node = NULL;
+		}
+
+
+
+		/* ************** */
+		/*   Assignment   */
+		/* ************** */
+
+		tree& operator=(const tree& t) {
+			if (this != &t){
+				clear();
+				_root = copy_tree(t.get_root(), _super_root);
+				_super_root->left = _root;
+				_super_root->right = _root;
+				if (_root) {
+					_root->parent = _super_root;
+				}
+			}
+			return *this;
+		}
+
+
+
+		/* ************* */
+		/*   Iterators   */
+		/* ************* */
 
 		iterator begin() {
 			if(_size == 0)
@@ -112,10 +166,15 @@ namespace ft
 		iterator end() {return iterator(_super_root);}
 		const_iterator end() const {return const_iterator(_super_root);}
 
+
+
+		/* ************ */
+		/*   Capacity   */
+		/* ************ */
+
 		bool empty() const { return _size == 0; }
 
-		size_type& size() {return _size;}
-		const size_type& size() const {return _size;}
+		size_type& size() const {return _size;}
 
 		size_type max_size() const {
 			return std::min<size_type>(
@@ -123,9 +182,6 @@ namespace ft
 				static_cast<size_type>(numeric_limits<difference_type>::max())
 			);
 		}
-
-		// value_compare& value_comp() {return _value_comp;}
-		// const value_compare& value_comp() const {return _value_comp;}
 
 
 
@@ -145,14 +201,19 @@ namespace ft
 			if (pos.second == NONE)
 				return ft::pair<iterator,bool>(iterator(pos.first), false);
 
-			node_pointer new_node = allocate_node(val);
+			node_pointer new_node = _alloc.allocate(1);
+			_alloc.construct(new_node, node_type(src->value));
 			new_node->set_parent(pos.second);
 			new_node->set_left(NULL);
 			new_node->set_right(NULL);
 			if (pos.first == LEFT) {
 				(pos.second)->set_left(new_node);
+				if (pos.second == _begin_node)
+					_begin_node = new_node;
 			} else {
 				(pos.second)->set_right(new_node);
+				if (pos.second == _end_node)
+					_end_node = new_node;
 			}
 			_size++;
 			return ft::pair<iterator,bool>(iterator(new_node), true);
@@ -193,6 +254,15 @@ namespace ft
 		bool erase (const Key& k) { return erase(find(k)); }
 
 		void clear() { destroy(_root); }
+
+
+
+		/* ************* */
+		/*   Observers   */
+		/* ************* */
+
+		// value_compare& value_comp() {return _value_comp;}
+		// const value_compare& value_comp() const {return _value_comp;}
 
 
 
@@ -329,6 +399,14 @@ namespace ft
 		}
 
 
+
+		/* *********** */
+		/*   Getters   */
+		/* *********** */
+
+		node_pointer get_root() const { return _root; }
+
+
 	private:
 
 		void set_root(const value_type& val)
@@ -339,6 +417,31 @@ namespace ft
 			_super_root->right = _root;
 			_root->parent = _super_root;
 			_size++;
+		}
+
+		node_pointer copy_node(const node_type& src)
+		{
+			if (src)
+			{
+				node_pointer ptr = _alloc.allocate(1);
+
+				_alloc.construct(ptr, node_type(src->value));
+				return ptr;
+			}
+			return NULL;
+		}
+
+		node_pointer copy_tree(node_pointer src, node_pointer parent)
+		{
+			node_pointer ptr = NULL;
+			if (src)
+			{
+				ptr = copy_node(*(src));
+				ptr->parent = parent;
+				ptr->left = copy_tree(*(src->left), ptr);
+				ptr->right = copy_tree(*(src->right), ptr);
+			}
+			return ptr;
 		}
 
 		ft::pair<node_pointer, int> find_insert_position(node_pointer start, const value_type& val)
@@ -394,12 +497,18 @@ namespace ft
 			node_pointer parent = ptr->parent;
 			size_type direction = get_node_direction(ptr);
 
+			if (direction == LEFT) {
+				parent->left = NULL;
+				if (ptr == _begin_node)
+					_begin_node = parent;
+			}
+			if (direction == RIGHT) {
+				parent->right = NULL;
+				if (ptr == _end_node)
+					_end_node = parent;
+			}
 			_alloc.destroy(ptr);
 			_alloc.deallocate(ptr, 1);
-			if (direction == LEFT)
-				parent->left = NULL;
-			if (direction == RIGHT)
-				parent->right = NULL;
 		}
 
 		void delete_node_with_child(node_pointer ptr)
@@ -411,12 +520,18 @@ namespace ft
 			if (!current->left)
 				child = current->right;
 			
+			if (direction == LEFT) {
+				parent->left = child;
+				if (ptr == _begin_node)
+					_begin_node = child;
+			}
+			if (direction == RIGHT) {
+				parent->right = child;
+				if (ptr == _end_node)
+					_end_node = child;
+			}
 			_alloc.destroy(ptr);
 			_alloc.deallocate(ptr, 1);
-			if (direction == LEFT)
-				parent->left = child;
-			if (direction == RIGHT)
-				parent->right = child;
 		}
 
 		void delete_node_with_children(node_pointer ptr)
