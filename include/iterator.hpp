@@ -294,60 +294,6 @@ namespace ft
 
 
 
-	/* **************** */
-	/*   Map Iterator   */
-	/* **************** */
-
-	template<typename TreeIterator>
-	class map_iterator
-	{
-	public:
-		typedef typename TreeIterator::node_type                   node_type;
-
-	private:
-		TreeIterator i;
-	
-	public:
-	    typedef bidirectional_iterator_tag          	iterator_category;
-		typedef typename node_type::node_value_type 	value_type;
-		typedef typename std::ptrdiff_t             	difference_type;
-		typedef value_type&                         	reference;
-		typedef value_type*                         	pointer;
-
-		/* Constructors */
-		map_iterator() : i(nullptr) {}
-		map_iterator(TreeIterator ti) : i(ti) {}
-		map_iterator(const map_iterator& mi) : i(mi.i) {}
-
-		// /* Conversion operator */
-		// operator map_iterator<const value_type> () const { 
-		// 	return (map_iterator<const value_type>(this->i));
-		// }
-
-		/* Destrcutor */
-		virtual ~map_iterator() {}
-
-		/* Member function */
-		TreeIterator base() const { return i; }
-
-		/* Member function Operators */
-		reference operator*() const { return *i; }
-		pointer operator->() const { return &(operator*()); }
-		map_iterator& operator++() { ++i; return *this; }
-		map_iterator operator++(int) { map_iterator tmp(*this); ++(*this); return tmp; }
-		map_iterator& operator--() { --i; return *this; }
-		map_iterator operator--(int) { map_iterator tmp(*this); --(*this); return tmp; }
-
-		/* Non-member function Operators */
-		friend bool operator==(const map_iterator& x, const map_iterator& y)
-		{ return x.i == y.i; }
-
-		friend bool operator!=(const map_iterator& x, const map_iterator& y)
-		{ return !(x.i == y.i); }
-	};
-
-
-
 	/* ***************** */
 	/*   Tree Iterator   */
 	/* ***************** */
@@ -355,10 +301,12 @@ namespace ft
 	template <class T, class NodeType, class DiffType = std::ptrdiff_t>
 	class tree_iterator
 	{
+	public:
 		typedef NodeType                        	node_type;
 		typedef typename node_type::node_pointer	node_pointer;
 		// typedef typename node_pointer           	iter_pointer;
 
+	private:
 		node_pointer ptr;
 
 	public:
@@ -374,7 +322,7 @@ namespace ft
 
 		/* Conversion operator */
 		operator tree_iterator<const value_type, node_type> () const { 
-			return (tree_iterator<const value_type, node_type>(this->i));
+			return (tree_iterator<const value_type, node_type>(this->ptr));
 		}
 
 		reference operator*() const {return ptr->value;}
@@ -421,6 +369,60 @@ namespace ft
 				x = x->parent;
 			return x->parent;
 		}
+	};
+
+
+
+	/* **************** */
+	/*   Map Iterator   */
+	/* **************** */
+
+	template<typename TreeIterator>
+	class map_iterator
+	{
+	public:
+		typedef typename TreeIterator::node_type                   node_type;
+
+	private:
+		TreeIterator i;
+	
+	public:
+	    typedef bidirectional_iterator_tag          	iterator_category;
+		typedef typename node_type::node_value_type 	value_type;
+		typedef typename std::ptrdiff_t             	difference_type;
+		typedef value_type&                         	reference;
+		typedef value_type*                         	pointer;
+
+		/* Constructors */
+		map_iterator() : i(nullptr) {}
+		map_iterator(const TreeIterator& ti) : i(ti) {}
+		map_iterator(const map_iterator& mi) : i(mi.i) {}
+
+		/* Conversion operator */
+		// operator map_iterator<TreeIterator> () const { 
+		// 	return (map_iterator<const value_type>(this->i));
+		// }
+
+		/* Destrcutor */
+		virtual ~map_iterator() {}
+
+		/* Member function */
+		TreeIterator base() const { return i; }
+
+		/* Member function Operators */
+		reference operator*() const { return *i; }
+		pointer operator->() const { return &(operator*()); }
+		map_iterator& operator++() { ++i; return *this; }
+		map_iterator operator++(int) { map_iterator tmp(*this); ++(*this); return tmp; }
+		map_iterator& operator--() { --i; return *this; }
+		map_iterator operator--(int) { map_iterator tmp(*this); --(*this); return tmp; }
+
+		/* Non-member function Operators */
+		friend bool operator==(const map_iterator& x, const map_iterator& y)
+		{ return x.i == y.i; }
+
+		friend bool operator!=(const map_iterator& x, const map_iterator& y)
+		{ return !(x.i == y.i); }
 	};
 
 }

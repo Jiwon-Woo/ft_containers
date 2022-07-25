@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <memory.h>
-#include "utils.hpp"
 #include "iterator.hpp"
 
 #define NONE 0
@@ -30,6 +29,7 @@ namespace ft
 		node_pointer   	right;
 		node_pointer   	left;
 
+		tree_node() : parent(nullptr), right(nullptr), left(nullptr) {}
 		tree_node(const node_value_type& v) : value(v), parent(nullptr), right(nullptr), left(nullptr) {}
 		tree_node(const tree_node& tn) : value(tn.value), parent(tn.parent), right(tn.right), left(tn.left) {}
 		~tree_node() {}
@@ -92,7 +92,7 @@ namespace ft
 		/*   Construct   */
 		/* ************* */
 		
-		tree(const value_compare& comp = value_compare(), const allocator_type& alloc = allocator_type())
+		tree(const value_compare& comp, const allocator_type& alloc = allocator_type())
 			: _root(NULL), _begin_node(NULL), _end_node(NULL), _alloc(alloc), _size(0), _value_comp(comp)
 		{
 			_super_root = _alloc.allocate(1);
@@ -102,11 +102,12 @@ namespace ft
 			_super_root->right = NULL;
 		}
 
-		tree(const tree& t)
+		tree(const tree& t, const allocator_type& alloc = allocator_type())
+			: _alloc(alloc), _size(t.size()), _value_comp(t.value_comp())
 		{
 			_super_root = _alloc.allocate(1);
 			_alloc.construct(_super_root, node_type());
-			_root = copy_tree(t.get_root(), _super_root);
+			_root = copy_tree(t._root, _super_root);
 			_super_root->left = _root;
 			_super_root->right = _root;
 			if (_root) {
@@ -122,7 +123,7 @@ namespace ft
 
 		~tree() {
 			clear();
-			_alloc.destory(_super_root);
+			_alloc.destroy(_super_root);
 			_alloc.deallocate(_super_root, 1);
 			_super_root = _root = _begin_node = NULL;
 		}
@@ -142,6 +143,7 @@ namespace ft
 				if (_root) {
 					_root->parent = _super_root;
 				}
+				_size = t.size();
 			}
 			return *this;
 		}
@@ -175,7 +177,7 @@ namespace ft
 
 		bool empty() const { return _size == 0; }
 
-		size_type& size() const {return _size;}
+		size_type size() const {return _size;}
 
 		size_type max_size() const {
 			return std::min<size_type>(
@@ -204,16 +206,16 @@ namespace ft
 
 			node_pointer new_node = _alloc.allocate(1);
 			_alloc.construct(new_node, node_type(val));
-			new_node->set_parent(pos.second);
+			new_node->set_parent(pos.first);
 			new_node->set_left(NULL);
 			new_node->set_right(NULL);
-			if (pos.first == LEFT) {
-				(pos.second)->set_left(new_node);
-				if (pos.second == _begin_node)
+			if (pos.second == LEFT) {
+				(pos.first)->set_left(new_node);
+				if (pos.first == _begin_node)
 					_begin_node = new_node;
 			} else {
-				(pos.second)->set_right(new_node);
-				if (pos.second == _end_node)
+				(pos.first)->set_right(new_node);
+				if (pos.first == _end_node)
 					_end_node = new_node;
 			}
 			_size++;
@@ -227,7 +229,7 @@ namespace ft
 				_begin_node = _end_node = _root;
 				return ft::pair<iterator,bool>(iterator(_root), true);
 			}
-			if ((*position).first == val.fisrt)
+			if (!_value_comp(*position, val) && !_value_comp(val, *position))
 				return ft::pair<iterator,bool>(position, false);
 			return insert(val);
 		}
@@ -251,8 +253,7 @@ namespace ft
 			return true;
 		}
 
-		template <class Key>
-		bool erase (const Key& k) { return erase(find(k)); }
+		bool erase (const value_type& k) { return erase(find(k)); }
 
 		void clear() { destroy(_root); }
 
@@ -262,8 +263,8 @@ namespace ft
 		/*   Observers   */
 		/* ************* */
 
-		// value_compare& value_comp() {return _value_comp;}
-		// const value_compare& value_comp() const {return _value_comp;}
+		value_compare& value_comp() { return _value_comp; }
+		const value_compare& value_comp() const { return _value_comp; }
 
 
 
@@ -271,8 +272,7 @@ namespace ft
 		/*   Operations   */
 		/* ************** */
 
-		template <class Key>
-		iterator find(const Key& k)
+		iterator find(const value_type& v)
 		{
 			if (_size == 0) {
 				return end();
@@ -280,10 +280,10 @@ namespace ft
 			node_pointer current = _root;
 			while (current)
 			{
-				if (k == (current->value).first)
+				if (_value_comp(v, current->value)) {
+					current = current->left;
+				} else if (!_value_comp(current->value, v)) {
 					return iterator(current);
-				if (k < (current->value).first) {
-					current = current->left;
 				} else {
 					current = current->right;
 				}
@@ -291,8 +291,7 @@ namespace ft
 			return end();
 		}
 
-		template <class Key>
-		const_iterator find(const Key& k) const
+		const_iterator find(const value_type& v) const
 		{
 			if (_size == 0) {
 				return end();
@@ -300,10 +299,10 @@ namespace ft
 			node_pointer current = _root;
 			while (current)
 			{
-				if (k == (current->value).first)
-					return const_iterator(current);
-				if (k < (current->value).first) {
+				if (_value_comp(v, current->value)) {
 					current = current->left;
+				} else if (!_value_comp(current->value, v)) {
+					return iterator(current);
 				} else {
 					current = current->right;
 				}
@@ -311,11 +310,9 @@ namespace ft
 			return end();
 		}
 
-		template <class Key>
-		size_type count (const Key& k) const { return !(find(k) == end()); }
+		size_type count (const value_type& v) const { return !(find(v) == end()); }
 
-		template <class Key>
-		iterator lower_bound(const Key& v)
+		iterator lower_bound(const value_type& v)
 		{
 			node_pointer current = _root;
 			node_pointer result = _super_root;
@@ -333,8 +330,7 @@ namespace ft
 			return iterator(result);
 		}
 
-		template <class Key>
-		const_iterator lower_bound(const Key& v) const
+		const_iterator lower_bound(const value_type& v) const
 		{
 			node_pointer current = _root;
 			node_pointer result = _super_root;
@@ -352,8 +348,7 @@ namespace ft
 			return const_iterator(result);
 		}
 
-		template <class Key>
-		iterator upper_bound(const Key& v)
+		iterator upper_bound(const value_type& v)
 		{
 			node_pointer current = _root;
 			node_pointer result = _super_root;
@@ -371,8 +366,7 @@ namespace ft
 			return iterator(result);
 		}
 
-		template <class Key>
-		const_iterator upper_bound(const Key& v) const
+		const_iterator upper_bound(const value_type& v) const
 		{
 			node_pointer current = _root;
 			node_pointer result = _super_root;
@@ -390,14 +384,12 @@ namespace ft
 			return const_iterator(result);
 		}
 
-		template <class Key>
-		ft::pair<iterator, iterator> equal_range (const Key& k) {
-			return ft::pair<iterator, iterator>(lower_bound(k), upper_bound(k));
+		ft::pair<iterator, iterator> equal_range (const value_type& v) {
+			return ft::pair<iterator, iterator>(lower_bound(v), upper_bound(v));
 		}
 
-		template <class Key>
-		ft::pair<const_iterator, const_iterator> equal_range (const Key& k) const {
-			return ft::pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k));
+		ft::pair<const_iterator, const_iterator> equal_range (const value_type& v) const {
+			return ft::pair<const_iterator, const_iterator>(lower_bound(v), upper_bound(v));
 		}
 
 
@@ -423,14 +415,10 @@ namespace ft
 
 		node_pointer copy_node(const node_type& src)
 		{
-			if (src)
-			{
-				node_pointer ptr = _alloc.allocate(1);
+			node_pointer ptr = _alloc.allocate(1);
 
-				_alloc.construct(ptr, node_type(src->value));
-				return ptr;
-			}
-			return NULL;
+			_alloc.construct(ptr, node_type(src.value));
+			return ptr;
 		}
 
 		node_pointer copy_tree(node_pointer src, node_pointer parent)
@@ -440,8 +428,8 @@ namespace ft
 			{
 				ptr = copy_node(*(src));
 				ptr->parent = parent;
-				ptr->left = copy_tree(*(src->left), ptr);
-				ptr->right = copy_tree(*(src->right), ptr);
+				ptr->left = copy_tree(src->left, ptr);
+				ptr->right = copy_tree(src->right, ptr);
 			}
 			return ptr;
 		}
@@ -454,13 +442,12 @@ namespace ft
 
 			while (current)
 			{
-				if (val.first == (current->value).first) {
-					return ft::pair<node_pointer,int>(current, NONE);
-				}
 				parent = current;
 				if (_value_comp(val, current->value)) {
 					current = current->left;
 					child_flag = LEFT;
+				} else if (!_value_comp(current->value, val)) {
+					return ft::pair<node_pointer,int>(current, NONE);
 				} else {
 					current = current->right;
 					child_flag = RIGHT;
@@ -536,9 +523,23 @@ namespace ft
 			_alloc.deallocate(ptr, 1);
 		}
 
+		node_pointer prev_iter(node_pointer x)
+		{
+			node_pointer copy_x = x;
+			if (copy_x->left != nullptr) {
+				copy_x = copy_x->left;
+				while (copy_x->right != nullptr)
+					copy_x = copy_x->right;
+				return copy_x;
+			}
+			while (copy_x != copy_x->parent->right)
+				copy_x = copy_x->parent;
+			return copy_x->parent;
+		}
+
 		void delete_node_with_children(node_pointer ptr)
 		{
-			node_pointer prev_ptr = tree_prev_iter(ptr);
+			node_pointer prev_ptr = prev_iter(ptr);
 
 			ptr->set_value(prev_ptr->value);
 			delete_leaf_node(prev_ptr);
