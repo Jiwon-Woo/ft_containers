@@ -78,8 +78,8 @@ namespace ft
 
 	private:
 		node_pointer  	_root;
-		node_pointer  	_begin_node;
-		node_pointer  	_end_node;
+		// node_pointer  	_begin_node;
+		// node_pointer  	_end_node;
 		node_pointer  	_super_root;	// 가상 루트
 		allocator_type	_alloc;
 		size_type     	_size;
@@ -93,7 +93,7 @@ namespace ft
 		/* ************* */
 		
 		tree(const value_compare& comp, const allocator_type& alloc = allocator_type())
-			: _root(NULL), _begin_node(NULL), _end_node(NULL), _alloc(alloc), _size(0), _value_comp(comp)
+			: _root(NULL), _alloc(alloc), _size(0), _value_comp(comp)
 		{
 			_super_root = _alloc.allocate(1);
 			_alloc.construct(_super_root, node_type());
@@ -125,7 +125,7 @@ namespace ft
 			clear();
 			_alloc.destroy(_super_root);
 			_alloc.deallocate(_super_root, 1);
-			_super_root = _root = _begin_node = NULL;
+			_super_root = NULL;
 		}
 
 
@@ -149,6 +149,15 @@ namespace ft
 		}
 
 
+		node_pointer get_min_node() const
+		{
+			node_pointer current = _root;
+
+			while (current->left) {
+				current = current->left;
+			}
+			return current;
+		}
 
 		/* ************* */
 		/*   Iterators   */
@@ -157,13 +166,13 @@ namespace ft
 		iterator begin() {
 			if(_size == 0)
 				return iterator(_super_root);
-			return iterator(_begin_node);
+			return iterator(get_min_node());
 		}
 
 		const_iterator begin() const {
 			if(_size == 0)
 				return const_iterator(_super_root);
-			return const_iterator(_begin_node);
+			return const_iterator(get_min_node());
 		}
 		
 		iterator end() {return iterator(_super_root);}
@@ -196,7 +205,6 @@ namespace ft
 		{
 			if (_size == 0) {
 				set_root(val);
-				_begin_node = _end_node = _root;
 				return ft::pair<iterator,bool>(iterator(_root), true);
 			}
 
@@ -211,12 +219,8 @@ namespace ft
 			new_node->set_right(NULL);
 			if (pos.second == LEFT) {
 				(pos.first)->set_left(new_node);
-				if (pos.first == _begin_node)
-					_begin_node = new_node;
 			} else {
 				(pos.first)->set_right(new_node);
-				if (pos.first == _end_node)
-					_end_node = new_node;
 			}
 			_size++;
 			return ft::pair<iterator,bool>(iterator(new_node), true);
@@ -226,7 +230,6 @@ namespace ft
 		{
 			if (_size == 0) {
 				set_root(val);
-				_begin_node = _end_node = _root;
 				return ft::pair<iterator,bool>(iterator(_root), true);
 			}
 			if (!_value_comp(*position, val) && !_value_comp(val, *position))
@@ -255,7 +258,12 @@ namespace ft
 
 		bool erase (const value_type& k) { return erase(find(k)); }
 
-		void clear() { destroy(_root); }
+		void clear() {
+			if (_root)
+				destroy(_root);
+			_root = NULL;
+			_size = 0;
+		}
 
 
 
@@ -488,13 +496,9 @@ namespace ft
 
 			if (direction == LEFT) {
 				parent->left = NULL;
-				if (ptr == _begin_node)
-					_begin_node = parent;
 			}
 			if (direction == RIGHT) {
 				parent->right = NULL;
-				if (ptr == _end_node)
-					_end_node = parent;
 			}
 			_alloc.destroy(ptr);
 			_alloc.deallocate(ptr, 1);
@@ -511,13 +515,9 @@ namespace ft
 			
 			if (direction == LEFT) {
 				parent->left = child;
-				if (ptr == _begin_node)
-					_begin_node = child;
 			}
 			if (direction == RIGHT) {
 				parent->right = child;
-				if (ptr == _end_node)
-					_end_node = child;
 			}
 			_alloc.destroy(ptr);
 			_alloc.deallocate(ptr, 1);

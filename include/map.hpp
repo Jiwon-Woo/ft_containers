@@ -98,9 +98,7 @@ namespace ft
 		// element access:
 		mapped_type& operator[](const key_type& k)
 		{
-			iterator it = find(k);
-
-			return (*it).second;
+			return (*((this->insert(ft::make_pair(k,mapped_type()))).first)).second;
 		}
 
 		// modifiers:
