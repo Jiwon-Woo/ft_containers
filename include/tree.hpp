@@ -4,6 +4,7 @@
 #include <functional>
 #include <memory.h>
 #include "utils.hpp"
+#include "iterator.hpp"
 
 #define NONE 0
 #define LEFT 1
@@ -179,7 +180,7 @@ namespace ft
 		size_type max_size() const {
 			return std::min<size_type>(
 				std::numeric_limits<size_type>::max() / sizeof(value_type),
-				static_cast<size_type>(numeric_limits<difference_type>::max())
+				static_cast<size_type>(std::numeric_limits<difference_type>::max())
 			);
 		}
 
@@ -202,7 +203,7 @@ namespace ft
 				return ft::pair<iterator,bool>(iterator(pos.first), false);
 
 			node_pointer new_node = _alloc.allocate(1);
-			_alloc.construct(new_node, node_type(src->value));
+			_alloc.construct(new_node, node_type(val));
 			new_node->set_parent(pos.second);
 			new_node->set_left(NULL);
 			new_node->set_right(NULL);
@@ -394,7 +395,8 @@ namespace ft
 			return ft::pair<iterator, iterator>(lower_bound(k), upper_bound(k));
 		}
 
-		ft::pair<const_iterator, const_iterator> equal_range (const key_type& k) const {
+		template <class Key>
+		ft::pair<const_iterator, const_iterator> equal_range (const Key& k) const {
 			return ft::pair<const_iterator, const_iterator>(lower_bound(k), upper_bound(k));
 		}
 
@@ -515,10 +517,10 @@ namespace ft
 		{
 			node_pointer parent = ptr->parent;
 			size_type direction = get_node_direction(ptr);
-			node_pointer child = current->left;
-			
-			if (!current->left)
-				child = current->right;
+
+			node_pointer child = ptr->left;
+			if (!ptr->left)
+				child = ptr->right;
 			
 			if (direction == LEFT) {
 				parent->left = child;
