@@ -1,6 +1,6 @@
 # compile flag
 CXX = clang++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
 # CXXFLAGS = -std=c++98
 LFLAGS = -L$(LIB) -l$(LIBNAME)
 IFLAGS = -I$(INCLUDE)
@@ -25,7 +25,7 @@ LIB = lib
 # file name
 MAIN = $(SRC)/map_test.cpp
 TEST = map_test
-SOURCE = utils iterator vector tree
+SOURCE = iterator map stack tree utils vector
 HEADER = $(foreach src, $(SOURCE), $(INCLUDE)/$(src).hpp)
 OBJECT = $(foreach file, $(TEST), $(OBJ)/$(file).o)
 LIBRARY = $(LIB)/lib$(LIBNAME).a
