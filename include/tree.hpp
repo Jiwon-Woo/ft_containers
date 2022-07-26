@@ -263,8 +263,8 @@ namespace ft
 		bool erase (const value_type& k) { return erase(find(k)); }
 
 		void erase (iterator first, iterator last) {
-			// if (first == begin() && last == end())
-			// 	clear();
+			if (first == begin() && last == end())
+				return clear();
 			for (iterator it = first; it != last; it++) {
 				erase(it);
 			}
@@ -530,7 +530,6 @@ namespace ft
 				parent->right = NULL;
 			}
 			if (ptr == _root) {
-				// _root->parent = NULL;
 				_root = NULL;
 				_super_root->left = NULL;
 				_super_root->right = NULL;

@@ -348,9 +348,7 @@ namespace ft
 		node_pointer tree_next_iter(node_pointer x)
 		{
 			if (x->parent == nullptr) {
-				// while (x->left != nullptr)
-				// 	x = x->left;
-				return nullptr;
+				return x;
 			}
 			if (x->right != nullptr) { // 큰 집합들 중 가장 작은 것
 				x = x->right;
