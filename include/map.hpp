@@ -13,7 +13,7 @@ namespace ft
 	public:
 		typedef Key                                                         	key_type;
 		typedef T                                                           	mapped_type;
-		typedef ft::pair<key_type, mapped_type>                       	value_type;
+		typedef ft::pair<const key_type, mapped_type>                       	value_type;
 		typedef Compare                                                     	key_compare;
 		typedef Alloc                                                       	allocator_type;
 		typedef std::ptrdiff_t                                              	difference_type;
@@ -114,29 +114,17 @@ namespace ft
 			}
 		}
 
-		void swap (map& x) {
-			tree_type temp = _tree;
-
-			_tree = x._tree;
-			x._tree = temp;
-		}
+		void swap (map& x) { _tree.swap(x._tree); }
 
 		void erase (iterator position) { _tree.erase(position); }
 		size_type erase (const key_type& k) { return _tree.erase(ft::make_pair(k, mapped_type())); }
-		void erase (iterator first, iterator last)
-		{
-			iterator it;
-
-			for (it = first; it != last; it++) {
-				_tree.erase(*it);
-			}
-		}
+		void erase (iterator first, iterator last) { _tree.erase(first, last); }
 
 		void clear() { _tree.clear(); }
 
 		// observers:
 		key_compare key_comp() const { return key_compare(); }
-		// value_compare value_comp() const; { }
+		value_compare value_comp() const { return _tree.value_comp(); }
 
 		// map operations:
 		iterator find(const key_type& k) { return _tree.find(ft::make_pair(k, mapped_type())); }

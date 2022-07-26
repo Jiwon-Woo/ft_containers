@@ -47,7 +47,7 @@ namespace ft
 		void set_parent(node_pointer p) { parent = p; }
 		void set_left(node_pointer p) { left = p; }
 		void set_right(node_pointer p) { right = p; }
-		void set_value(const node_value_type& v) { value = v; }
+		void set_value(const node_value_type& v) { value.second = v.second; }
 	};
 
 
@@ -190,8 +190,8 @@ namespace ft
 
 		size_type max_size() const {
 			return std::min<size_type>(
-				std::numeric_limits<size_type>::max() / sizeof(value_type),
-				static_cast<size_type>(std::numeric_limits<difference_type>::max())
+				static_cast<size_type>(_alloc.max_size()),
+				static_cast<size_type>(std::numeric_limits<size_type>::max() / sizeof(value_type))
 			);
 		}
 
@@ -239,10 +239,13 @@ namespace ft
 
 		bool erase(iterator p)
 		{
-			if (p == end())
+			if (_size == 0)
 				return false;
 			
 			node_pointer current = p.get_np();
+			if (current == nullptr || current == _super_root)
+				return false;
+			
 			size_type child_num = get_child_number(current);
 
 			if (child_num == 0) {
@@ -252,17 +255,41 @@ namespace ft
 			} else {
 				delete_node_with_children(current);
 			}
+			p.set_np(NULL);
 			--_size;
 			return true;
 		}
 
 		bool erase (const value_type& k) { return erase(find(k)); }
 
+		void erase (iterator first, iterator last) {
+			// if (first == begin() && last == end())
+			// 	clear();
+			for (iterator it = first; it != last; it++) {
+				erase(it);
+			}
+		}
+
 		void clear() {
 			if (_root)
 				destroy(_root);
 			_root = NULL;
 			_size = 0;
+		}
+
+
+
+		void swap (tree& t) {
+			node_pointer temp_super_root = _super_root;
+			node_pointer temp_root = _root;
+			size_type temp_size = _size;
+
+			_super_root = t._super_root;
+			t._super_root = temp_super_root;
+			_root = t._root;
+			t._root = temp_root;
+			_size = t._size;
+			t._size = temp_size;
 		}
 
 
@@ -418,6 +445,8 @@ namespace ft
 			_super_root->left = _root;
 			_super_root->right = _root;
 			_root->parent = _super_root;
+			_root->left = NULL;
+			_root->right = NULL;
 			_size++;
 		}
 
@@ -500,6 +529,12 @@ namespace ft
 			if (direction == RIGHT) {
 				parent->right = NULL;
 			}
+			if (ptr == _root) {
+				// _root->parent = NULL;
+				_root = NULL;
+				_super_root->left = NULL;
+				_super_root->right = NULL;
+			}
 			_alloc.destroy(ptr);
 			_alloc.deallocate(ptr, 1);
 		}
@@ -519,6 +554,12 @@ namespace ft
 			if (direction == RIGHT) {
 				parent->right = child;
 			}
+			if (ptr == _root) {
+				_root = child;
+				_super_root->left = child;
+				_super_root->right = child;
+			}
+			child->parent = parent;
 			_alloc.destroy(ptr);
 			_alloc.deallocate(ptr, 1);
 		}
@@ -526,23 +567,67 @@ namespace ft
 		node_pointer prev_iter(node_pointer x)
 		{
 			node_pointer copy_x = x;
+			if (copy_x->parent == nullptr) {
+				while (copy_x->right != nullptr)
+					copy_x = copy_x->right;
+				return copy_x;
+			}
 			if (copy_x->left != nullptr) {
 				copy_x = copy_x->left;
 				while (copy_x->right != nullptr)
 					copy_x = copy_x->right;
 				return copy_x;
 			}
-			while (copy_x != copy_x->parent->right)
-				copy_x = copy_x->parent;
-			return copy_x->parent;
+			return nullptr;
 		}
 
 		void delete_node_with_children(node_pointer ptr)
 		{
+			node_pointer parent = ptr->parent;
+			size_type direction = get_node_direction(ptr);
 			node_pointer prev_ptr = prev_iter(ptr);
+			size_type prev_direction = get_node_direction(prev_ptr);
+			size_type prev_child_num = get_child_number(prev_ptr);
 
-			ptr->set_value(prev_ptr->value);
-			delete_leaf_node(prev_ptr);
+			if (direction == LEFT)
+				parent->left = prev_ptr;
+			if (direction == RIGHT)
+				parent->right = prev_ptr;
+			
+			if (ptr == _root) {
+				_root = prev_ptr;
+				_super_root->left = prev_ptr;
+				_super_root->right = prev_ptr;
+			}
+
+			if (prev_child_num == 0) {
+				if (prev_direction == LEFT)
+					prev_ptr->parent->left = NULL;
+				if (prev_direction == RIGHT)
+					prev_ptr->parent->right = NULL;
+				
+			} else if (prev_child_num == 1) {
+				node_pointer prev_child = prev_ptr->left;
+				if (prev_child == nullptr)
+					prev_child = prev_ptr->right;
+				
+				if (prev_direction == LEFT)
+					prev_ptr->parent->left = prev_child;
+				if (prev_direction == RIGHT)
+					prev_ptr->parent->right = prev_child;
+				prev_child->parent = prev_ptr->parent;
+			}
+
+			prev_ptr->parent = parent;
+			prev_ptr->left = ptr->left;
+			if (ptr->left)
+				ptr->left->parent = prev_ptr;
+			prev_ptr->right = ptr->right;
+			if (ptr->right)
+				ptr->right->parent = prev_ptr;
+			
+			_alloc.destroy(ptr);
+			_alloc.deallocate(ptr, 1);
 		}
 
 		void destroy(node_pointer ptr)

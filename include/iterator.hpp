@@ -343,9 +343,15 @@ namespace ft
 		{return !(x == y);}
 
 		node_pointer get_np() const { return ptr; }
+		void set_np(node_pointer p) { ptr = p; }
 
 		node_pointer tree_next_iter(node_pointer x)
 		{
+			if (x->parent == nullptr) {
+				// while (x->left != nullptr)
+				// 	x = x->left;
+				return nullptr;
+			}
 			if (x->right != nullptr) { // 큰 집합들 중 가장 작은 것
 				x = x->right;
 				while (x->left != nullptr)
@@ -359,6 +365,11 @@ namespace ft
 
 		node_pointer tree_prev_iter(node_pointer x)
 		{
+			if (x->parent == nullptr) {
+				while (x->right != nullptr)
+					x = x->right;
+				return x;
+			}
 			if (x->left != nullptr) {
 				x = x->left;
 				while (x->right != nullptr)
