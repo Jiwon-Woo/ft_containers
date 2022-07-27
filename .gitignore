@@ -5,6 +5,7 @@ lib/
 obj/
 *_tester/
 *.gif
+test/
 
 # Prerequisites
 *.d
