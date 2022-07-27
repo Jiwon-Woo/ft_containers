@@ -3,11 +3,13 @@
 
 #include <functional>
 #include <memory.h>
+#include <cstdlib>
 #include "iterator.hpp"
 
 #define NONE 0
 #define LEFT 1
 #define RIGHT 2
+
 
 namespace ft
 {
@@ -204,6 +206,7 @@ namespace ft
 				(pos.first)->set_right(new_node);
 			}
 			_size++;
+			rotate();
 			return ft::pair<iterator,bool>(iterator(new_node), true);
 		}
 
@@ -237,7 +240,8 @@ namespace ft
 				delete_node_with_children(current);
 			}
 			p.set_np(NULL);
-			--_size;
+			_size--;
+			rotate();
 			return true;
 		}
 
@@ -619,6 +623,95 @@ namespace ft
 				destroy(ptr->right);
 				_alloc.destroy(ptr);
 				_alloc.deallocate(ptr, 1);
+			}
+		}
+
+		ft::pair<int, int> get_height_and_balance(node_pointer p)
+		{
+			if (p == 0)
+				return ft::pair<int, int>(-1, -1);
+			ft::pair<int, int> left_node = get_height_and_balance(p->left);
+			ft::pair<int, int> right_node = get_height_and_balance(p->right);
+			int height = std::max(left_node.first, right_node.first) + 1;
+			int balance = left_node.first - right_node.first;
+			return ft::pair<int, int>(height, balance);
+		}
+
+		void rotate_ll(node_pointer p)
+		{
+			node_pointer parent = p->parent;
+			node_pointer left_child = p->left;
+			node_pointer left_child__right = left_child->right;
+
+			p->left = left_child__right;
+			if (left_child__right)
+				left_child__right->parent = p;
+			p->parent = left_child;
+			left_child->right = p;
+			parent->right = left_child;
+			left_child->parent = parent;
+			if (p == _root) {
+				_root = left_child;
+				_super_root->left = left_child;
+				_super_root->right = left_child;
+			}
+		}
+
+		void rotate_rr(node_pointer p)
+		{
+			node_pointer parent = p->parent;
+			node_pointer right_child = p->right;
+			node_pointer right_child__left = right_child->left;
+
+			p->right = right_child__left;
+			if (right_child__left)
+				right_child__left->parent = p;
+			p->parent = right_child;
+			right_child->left = p;
+			parent->left = right_child;
+			right_child->parent = parent;
+			if (p == _root) {
+				_root = right_child;
+				_super_root->left = right_child;
+				_super_root->right = right_child;
+			}
+		}
+
+		void rotate_lr()
+		{
+			rotate_rr(_root->left);
+			rotate_ll(_root);
+		}
+
+		void rotate_rl()
+		{
+			rotate_ll(_root->right);
+			rotate_rr(_root);
+		}
+
+		void rotate()
+		{
+			if (_size < 3)
+				return;
+			
+			ft::pair<int, int> left_node = get_height_and_balance(_root->left);
+			ft::pair<int, int> right_node = get_height_and_balance(_root->right);
+			int balance = left_node.first - right_node.first;
+			
+			if (abs(balance) <= 1)
+				return;
+			if (balance > 0) {
+				if (left_node.second < 0)
+					return rotate_lr();
+				else
+					return rotate_ll(_root);
+			}
+			else
+			{
+				if (right_node.second > 0)
+					return rotate_rl();
+				else
+					return rotate_rr(_root);
 			}
 		}
 
