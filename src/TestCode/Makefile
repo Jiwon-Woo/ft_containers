@@ -13,7 +13,7 @@
 NAME = test
 
 CC = c++
-CFLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
+CFLAGS = -Wall -Wextra -Werror -std=c++98 #-fsanitize=address -g3
 RM = rm -rf
 
 VECTOR_FILES = print \

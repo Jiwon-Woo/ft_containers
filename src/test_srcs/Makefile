@@ -8,7 +8,7 @@ SRCS			=	main.cpp
 
 CC				=	c++
 
-CFLAGS			=	-Wall -Wextra -Werror -std=c++98 #-g3 -fsanitize=address
+CFLAGS			=	-Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address
 
 FT_OBJ_PATH		=	ft_obj/
 STL_OBJ_PATH	=	obj/
