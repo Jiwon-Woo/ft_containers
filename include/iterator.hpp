@@ -105,14 +105,6 @@ namespace ft
 		explicit reverse_iterator(iterator_type it) : current(it) {}
 		template <class Up> reverse_iterator(const reverse_iterator<Up>& u) : current(u.base()) {}
 
-		/* Assignment Operator */
-		// template <class Up> reverse_iterator& operator=(const reverse_iterator<Up>& u) {
-		// 	if (this != &u) {
-		// 		this->current = u.base(); 
-		// 	}
-		// 	return *this;
-		// }
-
 		/* Destrcutor */
 		virtual ~reverse_iterator() {}
 
@@ -282,18 +274,6 @@ namespace ft
 
 
 
-	/* ******************* */
-	/*   is_map_iterator   */
-	/* ******************* */
-
-	template<typename T>
-	struct is_map_iterator : public false_type {};
-
-	template<>	struct is_map_iterator<ft::bidirectional_iterator_tag> : public true_type {};
-	template<>	struct is_map_iterator<std::bidirectional_iterator_tag> : public true_type {};
-
-
-
 	/* ***************** */
 	/*   Tree Iterator   */
 	/* ***************** */
@@ -304,7 +284,6 @@ namespace ft
 	public:
 		typedef NodeType                        	node_type;
 		typedef typename node_type::node_pointer	node_pointer;
-		// typedef typename node_pointer           	iter_pointer;
 
 	private:
 		node_pointer ptr;
@@ -316,6 +295,7 @@ namespace ft
 		typedef value_type&               	reference;
 		typedef value_type*               	pointer;
 
+		/* Constructors */
 		tree_iterator() : ptr(nullptr) {}
 		tree_iterator(const tree_iterator& ti) : ptr(ti.get_np()) {}
 		explicit tree_iterator(node_pointer p) : ptr(p) {}
@@ -325,40 +305,43 @@ namespace ft
 			return (tree_iterator<const value_type, node_type>(this->ptr));
 		}
 
+		/* Destrcutor */
+		virtual ~tree_iterator() {}
+
+		/* Member function Operators */
 		reference operator*() const {return ptr->value;}
 		pointer operator->() const {return &(this->operator*());}
 		tree_iterator& operator++() { ptr = tree_next_iter(ptr); return *this; }
 		tree_iterator operator++(int) { tree_iterator tmp(*this); ++(*this); return tmp; }
 		tree_iterator& operator--() { ptr = tree_prev_iter(ptr); return *this; }
+		tree_iterator operator--(int) { tree_iterator tmp(*this); --(*this); return tmp; }
 
-		tree_iterator operator--(int) {
-			tree_iterator tmp(*this);
-			--(*this);
-			return tmp;
-		}
-
+		/* Non-member function Operators */
 		friend bool operator==(const tree_iterator& x, const tree_iterator& y)
 		{return x.ptr == y.ptr;}
 		friend bool operator!=(const tree_iterator& x, const tree_iterator& y)
 		{return !(x == y);}
 
+		/* Getter & Setter */
 		node_pointer get_np() const { return ptr; }
 		void set_np(node_pointer p) { ptr = p; }
 
+
+	private:
 		node_pointer tree_next_iter(node_pointer x)
 		{
 			if (x->parent == nullptr) {
 				return x;
 			}
-			if (x->right != nullptr) { // 큰 집합들 중 가장 작은 것
+			if (x->right != nullptr) {
 				x = x->right;
 				while (x->left != nullptr)
 					x = x->left;
 				return x;
 			}
-			while (x != x->parent->left) // x가 왼쪽 자식이 될때까지 거슬러 올라가서
+			while (x != x->parent->left)
 				x = x->parent;
-			return x->parent; // 그 부모를 반환
+			return x->parent;
 		}
 
 		node_pointer tree_prev_iter(node_pointer x)
@@ -378,60 +361,6 @@ namespace ft
 				x = x->parent;
 			return x->parent;
 		}
-	};
-
-
-
-	/* **************** */
-	/*   Map Iterator   */
-	/* **************** */
-
-	template<typename TreeIterator>
-	class map_iterator
-	{
-	public:
-		typedef typename TreeIterator::node_type                   node_type;
-
-	private:
-		TreeIterator i;
-	
-	public:
-	    typedef bidirectional_iterator_tag          	iterator_category;
-		typedef typename node_type::node_value_type 	value_type;
-		typedef typename std::ptrdiff_t             	difference_type;
-		typedef value_type&                         	reference;
-		typedef value_type*                         	pointer;
-
-		/* Constructors */
-		map_iterator() : i(nullptr) {}
-		map_iterator(const TreeIterator& ti) : i(ti) {}
-		map_iterator(const map_iterator& mi) : i(mi.i) {}
-
-		/* Conversion operator */
-		// operator map_iterator<TreeIterator> () const { 
-		// 	return (map_iterator<const value_type>(this->i));
-		// }
-
-		/* Destrcutor */
-		virtual ~map_iterator() {}
-
-		/* Member function */
-		TreeIterator base() const { return i; }
-
-		/* Member function Operators */
-		reference operator*() const { return *i; }
-		pointer operator->() const { return &(operator*()); }
-		map_iterator& operator++() { ++i; return *this; }
-		map_iterator operator++(int) { map_iterator tmp(*this); ++(*this); return tmp; }
-		map_iterator& operator--() { --i; return *this; }
-		map_iterator operator--(int) { map_iterator tmp(*this); --(*this); return tmp; }
-
-		/* Non-member function Operators */
-		friend bool operator==(const map_iterator& x, const map_iterator& y)
-		{ return x.i == y.i; }
-
-		friend bool operator!=(const map_iterator& x, const map_iterator& y)
-		{ return !(x.i == y.i); }
 	};
 
 }

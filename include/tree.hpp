@@ -12,9 +12,9 @@
 namespace ft
 {
 
-	/* ******** */
-	/*   Node   */
-	/* ******** */
+	/* ************* */
+	/*   Tree Node   */
+	/* ************* */
 
 	template <typename T>
 	struct tree_node
@@ -61,7 +61,6 @@ namespace ft
 			typename Alloc = std::allocator<Node> >
 	class tree
 	{
-
 	public:
 		typedef T                                                      	value_type;
 		typedef Compare                                                	value_compare;
@@ -71,15 +70,12 @@ namespace ft
 		typedef typename allocator_type::const_pointer                 	const_pointer;
 		typedef std::size_t                                            	size_type;
 		typedef std::ptrdiff_t                                         	difference_type;
-
 		typedef typename node_type::node_pointer                       	node_pointer;
 		typedef	typename ft::tree_iterator<value_type, node_type>      	iterator;
 		typedef typename ft::tree_iterator<const value_type, node_type>	const_iterator;
 
 	private:
 		node_pointer  	_root;
-		// node_pointer  	_begin_node;
-		// node_pointer  	_end_node;
 		node_pointer  	_super_root;	// 가상 루트
 		allocator_type	_alloc;
 		size_type     	_size;
@@ -87,10 +83,9 @@ namespace ft
 
 
 	public:
-	
-		/* ************* */
-		/*   Construct   */
-		/* ************* */
+		/* **************** */
+		/*   Constructors   */
+		/* **************** */
 		
 		tree(const value_compare& comp, const allocator_type& alloc = allocator_type())
 			: _root(NULL), _alloc(alloc), _size(0), _value_comp(comp)
@@ -116,7 +111,6 @@ namespace ft
 		}
 
 
-
 		/* ************** */
 		/*   Destructor   */
 		/* ************** */
@@ -129,7 +123,6 @@ namespace ft
 		}
 
 
-
 		/* ************** */
 		/*   Assignment   */
 		/* ************** */
@@ -137,7 +130,7 @@ namespace ft
 		tree& operator=(const tree& t) {
 			if (this != &t){
 				clear();
-				_root = copy_tree(t.get_root(), _super_root);
+				_root = copy_tree(t._root, _super_root);
 				_super_root->left = _root;
 				_super_root->right = _root;
 				if (_root) {
@@ -148,16 +141,6 @@ namespace ft
 			return *this;
 		}
 
-
-		node_pointer get_min_node() const
-		{
-			node_pointer current = _root;
-
-			while (current->left) {
-				current = current->left;
-			}
-			return current;
-		}
 
 		/* ************* */
 		/*   Iterators   */
@@ -179,7 +162,6 @@ namespace ft
 		const_iterator end() const {return const_iterator(_super_root);}
 
 
-
 		/* ************ */
 		/*   Capacity   */
 		/* ************ */
@@ -194,7 +176,6 @@ namespace ft
 				static_cast<size_type>(std::numeric_limits<size_type>::max() / sizeof(value_type))
 			);
 		}
-
 
 
 		/* ************* */
@@ -277,8 +258,6 @@ namespace ft
 			_size = 0;
 		}
 
-
-
 		void swap (tree& t) {
 			node_pointer temp_super_root = _super_root;
 			node_pointer temp_root = _root;
@@ -293,14 +272,12 @@ namespace ft
 		}
 
 
-
 		/* ************* */
 		/*   Observers   */
 		/* ************* */
 
 		value_compare& value_comp() { return _value_comp; }
 		const value_compare& value_comp() const { return _value_comp; }
-
 
 
 		/* ************** */
@@ -428,15 +405,10 @@ namespace ft
 		}
 
 
-
-		/* *********** */
-		/*   Getters   */
-		/* *********** */
-
-		node_pointer get_root() const { return _root; }
-
-
 	private:
+		/* *************************** */
+		/*   Private member function   */
+		/* *************************** */
 
 		void set_root(const value_type& val)
 		{
@@ -448,6 +420,16 @@ namespace ft
 			_root->left = NULL;
 			_root->right = NULL;
 			_size++;
+		}
+
+		node_pointer get_min_node() const
+		{
+			node_pointer current = _root;
+
+			while (current->left) {
+				current = current->left;
+			}
+			return current;
 		}
 
 		node_pointer copy_node(const node_type& src)
@@ -518,6 +500,23 @@ namespace ft
 			return NONE;
 		}
 
+		node_pointer get_prev_iter(node_pointer x)
+		{
+			node_pointer copy_x = x;
+			if (copy_x->parent == nullptr) {
+				while (copy_x->right != nullptr)
+					copy_x = copy_x->right;
+				return copy_x;
+			}
+			if (copy_x->left != nullptr) {
+				copy_x = copy_x->left;
+				while (copy_x->right != nullptr)
+					copy_x = copy_x->right;
+				return copy_x;
+			}
+			return nullptr;
+		}
+
 		void delete_leaf_node(node_pointer ptr)
 		{
 			node_pointer parent = ptr->parent;
@@ -563,28 +562,11 @@ namespace ft
 			_alloc.deallocate(ptr, 1);
 		}
 
-		node_pointer prev_iter(node_pointer x)
-		{
-			node_pointer copy_x = x;
-			if (copy_x->parent == nullptr) {
-				while (copy_x->right != nullptr)
-					copy_x = copy_x->right;
-				return copy_x;
-			}
-			if (copy_x->left != nullptr) {
-				copy_x = copy_x->left;
-				while (copy_x->right != nullptr)
-					copy_x = copy_x->right;
-				return copy_x;
-			}
-			return nullptr;
-		}
-
 		void delete_node_with_children(node_pointer ptr)
 		{
 			node_pointer parent = ptr->parent;
 			size_type direction = get_node_direction(ptr);
-			node_pointer prev_ptr = prev_iter(ptr);
+			node_pointer prev_ptr = get_prev_iter(ptr);
 			size_type prev_direction = get_node_direction(prev_ptr);
 			size_type prev_child_num = get_child_number(prev_ptr);
 
