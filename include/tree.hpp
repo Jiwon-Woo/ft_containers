@@ -54,9 +54,9 @@ namespace ft
 
 
 
-	/* ******** */
-	/*   Tree   */
-	/* ******** */
+	/* ************ */
+	/*   AVL Tree   */
+	/* ************ */
 
 	template <typename T, typename Compare,
 			typename Node = ft::tree_node<T>,
@@ -105,6 +105,7 @@ namespace ft
 			_super_root = _alloc.allocate(1);
 			_alloc.construct(_super_root, node_type());
 			_root = copy_tree(t._root, _super_root);
+			_super_root->parent = NULL;
 			_super_root->left = _root;
 			_super_root->right = _root;
 			if (_root) {
@@ -133,6 +134,7 @@ namespace ft
 			if (this != &t){
 				clear();
 				_root = copy_tree(t._root, _super_root);
+				_super_root->parent = NULL;
 				_super_root->left = _root;
 				_super_root->right = _root;
 				if (_root) {
@@ -648,8 +650,8 @@ namespace ft
 				left_child__right->parent = p;
 			p->parent = left_child;
 			left_child->right = p;
-			parent->right = left_child;
 			left_child->parent = parent;
+			parent->right = left_child;
 			if (p == _root) {
 				_root = left_child;
 				_super_root->left = left_child;
@@ -668,8 +670,8 @@ namespace ft
 				right_child__left->parent = p;
 			p->parent = right_child;
 			right_child->left = p;
-			parent->left = right_child;
 			right_child->parent = parent;
+			parent->left = right_child;
 			if (p == _root) {
 				_root = right_child;
 				_super_root->left = right_child;

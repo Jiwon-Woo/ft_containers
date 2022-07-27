@@ -49,8 +49,6 @@ namespace ft
 	template<>	struct is_integral<unsigned int> : public true_type {};
 	template<>	struct is_integral<unsigned long> : public true_type {};
 	template<>	struct is_integral<unsigned long long> : public true_type {};
-	// template<>	struct is_integral<char16_t> : public true_type {};
-	// template<>	struct is_integral<char32_t> : public true_type {};
 
 
 
