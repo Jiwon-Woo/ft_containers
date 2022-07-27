@@ -110,7 +110,7 @@ SET_OBJS = $(addprefix $(SET_OBJS_DIR), $(addsuffix .o, $(SET_FILES)))
 
 all: $(NAME)
 
-$(NAME): vector stack pair map set
+$(NAME): vector stack pair map #set
 
 vector: fclean $(VECTOR_OBJS)
 	$(CC) $(CFLAGS) $(VECTOR_SRCS) -o $(NAME) && ./test
