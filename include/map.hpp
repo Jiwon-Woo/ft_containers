@@ -25,7 +25,7 @@ namespace ft
 
 		class value_compare : public std::binary_function<value_type, value_type, bool>
 		{
-			friend class map; // map 클래스는 value_compare private 변수에 접근 가능
+			friend class map;	// map 클래스는 value_compare private 변수에 접근 가능
 		
 		protected:
 			/* member variable */
@@ -36,7 +36,7 @@ namespace ft
 			
 		public:
 			bool operator()(const value_type& x, const value_type& y) const
-			{ return comp(x.first, y.first); } // value_type 형태(pair)의 compare -> 마찬가지로 key로 비교함
+			{ return comp(x.first, y.first); }
 		};
 		
 		typedef typename ft::tree<value_type, value_compare>	tree_type;
@@ -136,18 +136,16 @@ namespace ft
 		template <class InputIterator>
 		void insert (InputIterator first, InputIterator last)
 		{
-			InputIterator it;
-
-			for (it = first; it != last; it++) {
+			for (InputIterator it = first; it != last; it++) {
 				_tree.insert(*it);
 			}
 		}
 
-		void swap (map& x) { _tree.swap(x._tree); }
-
 		void erase (iterator position) { _tree.erase(position); }
 		size_type erase (const key_type& k) { return _tree.erase(ft::make_pair(k, mapped_type())); }
 		void erase (iterator first, iterator last) { _tree.erase(first, last); }
+
+		void swap (map& x) { _tree.swap(x._tree); }
 
 		void clear() { _tree.clear(); }
 
@@ -178,6 +176,12 @@ namespace ft
 		ft::pair<iterator, iterator> equal_range (const key_type& k) { return _tree.equal_range(ft::make_pair(k, mapped_type())); }
 		ft::pair<const_iterator, const_iterator> equal_range (const key_type& k) const { return _tree.equal_range(ft::make_pair(k, mapped_type())); }
 	
+
+		/* ************* */
+		/*   Allocator   */
+		/* ************* */
+		
+		allocator_type get_allocator() const { return _tree.get_allocator(); }
 	};
 
 
@@ -191,14 +195,14 @@ namespace ft
 	{ return x.size() == y.size() && ft::equal(x.begin(), x.end(), y.begin()); }
 
 	template <class _Key, class _Tp, class _Compare, class _Allocator>
-	bool operator< (const map<_Key, _Tp, _Compare, _Allocator>& x,
-			const map<_Key, _Tp, _Compare, _Allocator>& y)
-	{ return ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end()); }
-
-	template <class _Key, class _Tp, class _Compare, class _Allocator>
 	bool operator!=(const map<_Key, _Tp, _Compare, _Allocator>& x,
 			const map<_Key, _Tp, _Compare, _Allocator>& y)
 	{ return !(x == y); }
+
+	template <class _Key, class _Tp, class _Compare, class _Allocator>
+	bool operator< (const map<_Key, _Tp, _Compare, _Allocator>& x,
+			const map<_Key, _Tp, _Compare, _Allocator>& y)
+	{ return ft::lexicographical_compare(x.begin(), x.end(), y.begin(), y.end()); }
 
 	template <class _Key, class _Tp, class _Compare, class _Allocator>
 	bool operator> (const map<_Key, _Tp, _Compare, _Allocator>& x,

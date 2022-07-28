@@ -19,9 +19,18 @@ namespace ft
 	public:
 		/* Constructors */
 		explicit stack (const container_type& ctnr = container_type()) : c(ctnr) {}
+		stack(const stack& other) : c(other.c) {}
 
 		/* Destructors */
 		virtual ~stack() {}
+
+		/* Assignment */
+		stack& operator=(const stack& other) {
+			if (this != &other) {
+				c = other.c;
+			}
+			return *this;
+		}
 
 		/* Member functions */
 		bool empty() const { return this->c.empty(); }
@@ -32,37 +41,19 @@ namespace ft
 		void pop() { this->c.pop_back(); }
 
 		/* Relational Operators */
-		template <class Tp, class C> friend bool operator==(const stack<Tp, C>& x, const stack<Tp, C>& y);
-		template <class Tp, class C> friend bool operator<(const stack<Tp, C>& x, const stack<Tp, C>& y);
-		template <class Tp, class C> friend bool operator!=(const stack<Tp, C>& x, const stack<Tp, C>& y);
-		template <class Tp, class C> friend bool operator>(const stack<Tp, C>& x, const stack<Tp, C>& y);
-		template <class Tp, class C> friend bool operator>=(const stack<Tp, C>& x, const stack<Tp, C>& y);
-		template <class Tp, class C> friend bool operator<=(const stack<Tp, C>& x, const stack<Tp, C>& y);
+		friend bool operator==(const stack& x, const stack& y)
+		{ return x.c == y.c; }
+		friend bool operator<(const stack& x, const stack& y)
+		{ return x.c < y.c; }
+		friend bool operator!=(const stack& x, const stack& y)
+		{ return !(x == y); }
+		friend bool operator>(const stack& x, const stack& y)
+		{ return y < x; }
+		friend bool operator>=(const stack& x, const stack& y)
+		{ return !(x < y); }
+		friend bool operator<=(const stack& x, const stack& y)
+		{ return !(y < x); }
 	};
-
-	template <class Tp, class C>
-	bool operator==(const stack<Tp, C>& x, const stack<Tp, C>& y)
-	{ return x.c == y.c; }
-
-	template <class Tp, class C>
-	bool operator<(const stack<Tp, C>& x, const stack<Tp, C>& y)
-	{ return x.c < y.c; }
-
-	template <class Tp, class C>
-	bool operator!=(const stack<Tp, C>& x, const stack<Tp, C>& y)
-	{ return !(x == y); }
-
-	template <class Tp, class C>
-	bool operator>(const stack<Tp, C>& x, const stack<Tp, C>& y)
-	{ return y < x; }
-
-	template <class Tp, class C>
-	bool operator>=(const stack<Tp, C>& x, const stack<Tp, C>& y)
-	{ return !(x < y); }
-
-	template <class Tp, class C>
-	bool operator<=(const stack<Tp, C>& x, const stack<Tp, C>& y)
-	{ return !(y < x); }
 
 }
 

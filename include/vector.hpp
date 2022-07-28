@@ -1,7 +1,6 @@
 #ifndef VECTOR_HPP
 # define VECTOR_HPP
 
-#include <memory>
 #include <limits>
 #include <iostream>
 #include <stdexcept>
@@ -58,9 +57,9 @@ namespace ft
 
 		template <class InputIterator>
 		vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-				typename ft::enable_if<ft::is_vector_iterator<typename InputIterator::iterator_category>::value>::type* = nullptr)
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = nullptr)
 			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {
-			difference_type n = last - first;
+			difference_type n = std::distance(first, last);
 			if (n > 0) {
 				if (static_cast<size_type>(n) > this->max_size())
 					throw std::length_error("vector");
@@ -226,8 +225,8 @@ namespace ft
 
 		template <class InputIterator>
 		void assign (InputIterator first, InputIterator last,
-				typename ft::enable_if<ft::is_vector_iterator<typename InputIterator::iterator_category>::value>::type* = nullptr) {
-			difference_type n = last - first;
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = nullptr) {
+			difference_type n = std::distance(first, last);
 			if (static_cast<size_type>(n) > this->max_size())
 				throw std::length_error("vector");
 
@@ -358,8 +357,8 @@ namespace ft
 
 		template <class InputIterator>
 		void insert (iterator position, InputIterator first, InputIterator last,
-				typename ft::enable_if<ft::is_vector_iterator<typename InputIterator::iterator_category>::value>::type* = nullptr) {
-			difference_type n = last - first;
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = nullptr) {
+			difference_type n = std::distance(first, last);
 			if (n > 0) {
 				if (this->size() + static_cast<size_type>(n) > this->max_size())
 					throw std::length_error("vector");
@@ -454,8 +453,12 @@ namespace ft
 			}
 		}
 
-		/* Allocator */
-		// allocator_type get_allocator() const { return allocator_type(); }
+
+		/* ************* */
+		/*   Allocator   */
+		/* ************* */
+		
+		allocator_type get_allocator() const { return _alloc; }
 
 	};
 

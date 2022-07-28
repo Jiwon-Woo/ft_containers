@@ -2,7 +2,6 @@
 # define TREE_HPP
 
 #include <functional>
-#include <memory.h>
 #include <cstdlib>
 #include "iterator.hpp"
 
@@ -177,7 +176,7 @@ namespace ft
 		size_type max_size() const {
 			return std::min<size_type>(
 				static_cast<size_type>(_alloc.max_size()),
-				static_cast<size_type>(std::numeric_limits<size_type>::max() / sizeof(value_type))
+				static_cast<size_type>(std::numeric_limits<size_type>::max())
 			);
 		}
 
@@ -225,13 +224,10 @@ namespace ft
 
 		bool erase(iterator p)
 		{
-			if (_size == 0)
+			if (_size == 0 || p == end())
 				return false;
 			
 			node_pointer current = p.get_np();
-			if (current == nullptr || current == _super_root)
-				return false;
-			
 			size_type child_num = get_child_number(current);
 
 			if (child_num == 0) {
@@ -408,6 +404,13 @@ namespace ft
 		}
 
 
+		/* ************* */
+		/*   Allocator   */
+		/* ************* */
+		
+		allocator_type get_allocator() const { return _alloc; }
+
+
 	private:
 		/* *************************** */
 		/*   Private member function   */
@@ -503,23 +506,6 @@ namespace ft
 			return NONE;
 		}
 
-		node_pointer get_prev_iter(node_pointer x)
-		{
-			node_pointer copy_x = x;
-			if (copy_x->parent == nullptr) {
-				while (copy_x->right != nullptr)
-					copy_x = copy_x->right;
-				return copy_x;
-			}
-			if (copy_x->left != nullptr) {
-				copy_x = copy_x->left;
-				while (copy_x->right != nullptr)
-					copy_x = copy_x->right;
-				return copy_x;
-			}
-			return nullptr;
-		}
-
 		void delete_leaf_node(node_pointer ptr)
 		{
 			node_pointer parent = ptr->parent;
@@ -569,7 +555,7 @@ namespace ft
 		{
 			node_pointer parent = ptr->parent;
 			size_type direction = get_node_direction(ptr);
-			node_pointer prev_ptr = get_prev_iter(ptr);
+			node_pointer prev_ptr = (--iterator(ptr)).get_np();
 			size_type prev_direction = get_node_direction(prev_ptr);
 			size_type prev_child_num = get_child_number(prev_ptr);
 
