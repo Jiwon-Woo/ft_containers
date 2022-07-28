@@ -38,6 +38,8 @@ namespace ft
 
 	template<>	struct is_integral<bool> : public true_type {};
 	template<>	struct is_integral<char> : public true_type {};
+	template<>	struct is_integral<char16_t> : public true_type {};
+	template<>	struct is_integral<char32_t> : public true_type {};
 	template<>	struct is_integral<wchar_t> : public true_type {};
 	template<>	struct is_integral<signed char> : public true_type {};
 	template<>	struct is_integral<short> : public true_type {};
@@ -132,13 +134,14 @@ namespace ft
 
 		pair() : first(), second() {}
 		pair(const first_type& a, const second_type& b) : first(a), second(b) {}
-		
 		template<class U, class V>
 		pair(const pair<U,V>& pr) : first(pr.first), second(pr.second) {}
 
 		pair& operator=(const pair& pr) {
-			first = pr.first;
-			second = pr.second;
+			if (this != &pr) {
+				first = pr.first;
+				second = pr.second;
+			}
 			return *this;
 		}
 	};
