@@ -49,16 +49,15 @@ int main()
 	ft::stack<int>			     stack;
 	clock_t					start, end;
 	
-     /* to be sure of the namespace used, you can uncomment this : */
+	/* to be sure of the namespace used, you can uncomment this : */
 	// title(NAMESPACE);
-     
+
 	start = clock();
 	vectorTests(vect);
 	mapTests(map);
 	stackTests(stack);
-	std::cout << "END." << std::endl;
 	end = clock();
-	(void)(end - start);
+	std::cout << "END." << std::endl;
 	std::cout << "Time: " << (double)(end - start) / CLOCKS_PER_SEC << "s" << std::endl;
 	return (0);
 }
