@@ -12,12 +12,12 @@
     namespace ft = std;
 #else
     # define NAMESPACE "FT"
-    # include "../../include/iterator.hpp"
-    # include "../../include/map.hpp"
-    # include "../../include/stack.hpp"
-    # include "../../include/tree.hpp"
-    # include "../../include/utils.hpp"
-    # include "../../include/vector.hpp"
+    # include "../../includes/iterator.hpp"
+    # include "../../includes/map.hpp"
+    # include "../../includes/stack.hpp"
+    # include "../../includes/tree.hpp"
+    # include "../../includes/utils.hpp"
+    # include "../../includes/vector.hpp"
 #endif
 
 void heading(std::string name);
