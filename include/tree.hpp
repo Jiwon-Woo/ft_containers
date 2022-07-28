@@ -241,7 +241,6 @@ namespace ft
 			} else {
 				delete_node_with_children(current);
 			}
-			p.set_np(NULL);
 			_size--;
 			rotate();
 			return true;
@@ -250,10 +249,8 @@ namespace ft
 		bool erase (const value_type& k) { return erase(find(k)); }
 
 		void erase (iterator first, iterator last) {
-			if (first == begin() && last == end())
-				return clear();
-			for (iterator it = first; it != last; it++) {
-				erase(it);
+			for (iterator it = first; it != last;) {
+				erase(it++);
 			}
 		}
 
