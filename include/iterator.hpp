@@ -7,19 +7,6 @@
 
 namespace ft
 {
-
-	/* ***************** */
-	/*   Category tags   */
-	/* ***************** */
-
-	struct input_iterator_tag {};
-	struct output_iterator_tag {};
-	struct forward_iterator_tag : public input_iterator_tag {};
-	struct bidirectional_iterator_tag : public forward_iterator_tag {};
-	struct random_access_iterator_tag : public bidirectional_iterator_tag {};
-
-
-
 	/* ************ */
 	/*   Iterator   */
 	/* ************ */
@@ -57,21 +44,21 @@ namespace ft
 	template <typename T>
 	struct iterator_traits<T*>
 	{
-		typedef std::ptrdiff_t            	difference_type;
-		typedef T                         	value_type;
-		typedef T*                        	pointer;
-		typedef T&                        	reference;
-		typedef random_access_iterator_tag	iterator_category;
+		typedef std::ptrdiff_t                  	difference_type;
+		typedef T                               	value_type;
+		typedef T*                              	pointer;
+		typedef T&                              	reference;
+		typedef std::random_access_iterator_tag 	iterator_category;
 	};
 
 	template <typename T>
 	struct iterator_traits<const T*>
 	{
-		typedef std::ptrdiff_t            	difference_type;
-		typedef T                         	value_type;
-		typedef const T*                  	pointer;
-		typedef const T&                  	reference;
-		typedef random_access_iterator_tag	iterator_category;
+		typedef std::ptrdiff_t                  	difference_type;
+		typedef T                               	value_type;
+		typedef const T*                        	pointer;
+		typedef const T&                        	reference;
+		typedef std::random_access_iterator_tag 	iterator_category;
 	};
 
 
@@ -103,10 +90,15 @@ namespace ft
 		/* Constructors */
 		reverse_iterator() : current() {}
 		explicit reverse_iterator(iterator_type it) : current(it) {}
-		template <class Up> reverse_iterator(const reverse_iterator<Up>& u) : current(u.base()) {}
+		template <class U>
+		reverse_iterator(const reverse_iterator<U>& u) : current(u.base()) {}
 
-		/* Destrcutor */
-		virtual ~reverse_iterator() {}
+		/* Assignment Operator */
+		template <class U>
+		reverse_iterator& operator=(const reverse_iterator<U>& u) {
+			current = u.base();
+			return *this;
+		}
 
 		/* Member function */
 		iterator_type base() const { return current; }
@@ -164,33 +156,20 @@ namespace ft
 
 
 
-	/* ********************** */
-	/*   is_vector_iterator   */
-	/* ********************** */
-
-	template<typename T>
-	struct is_vector_iterator : public false_type {};
-
-	template<>	struct is_vector_iterator<ft::random_access_iterator_tag> : public true_type {};
-	template<>	struct is_vector_iterator<std::random_access_iterator_tag> : public true_type {};
-	template<>	struct is_vector_iterator<ft::bidirectional_iterator_tag> : public true_type {};
-	template<>	struct is_vector_iterator<std::bidirectional_iterator_tag> : public true_type {};
-
-
-
 	/* ******************* */
 	/*   Vector Iterator   */
 	/* ******************* */
 
 	template <typename T>
-	class vector_iterator
+	class vector_iterator : public iterator<std::random_access_iterator_tag, T>
 	{
 	public:
-		typedef std::ptrdiff_t                	difference_type;
-		typedef T                             	value_type;
-		typedef T*                            	pointer;
-		typedef T&                            	reference;
-		typedef ft::random_access_iterator_tag	iterator_category;
+		typedef iterator<std::random_access_iterator_tag, T>          	iter_type;
+		typedef typename iterator_traits<iter_type>::difference_type  	difference_type;
+		typedef typename iterator_traits<iter_type>::value_type       	value_type;
+		typedef typename iterator_traits<iter_type>::pointer          	pointer;
+		typedef typename iterator_traits<iter_type>::reference        	reference;
+		typedef typename iterator_traits<iter_type>::iterator_category	iterator_category;
 
 	private:
 		pointer i;
@@ -200,8 +179,9 @@ namespace ft
 		vector_iterator() : i(nullptr) {}
 		vector_iterator(const vector_iterator& vi) : i(vi.base()) {}
 		vector_iterator(pointer it) : i(it) {}
-		template <class Up> vector_iterator(const vector_iterator<Up>& u,
-				typename ft::enable_if<is_vector_iterator<typename Up::iterator_category>::value>::type* = nullptr)
+		template <class Iterator>
+		vector_iterator(const vector_iterator<Iterator>& u,
+				typename ft::enable_if<!ft::is_integral<Iterator>::value>::type* = nullptr)
 			: i(u.base()) {}
 
 		/* Assignment Operator */
@@ -279,7 +259,7 @@ namespace ft
 	/* ***************** */
 
 	template <class T, class NodeType, class DiffType = std::ptrdiff_t>
-	class tree_iterator
+	class tree_iterator : public iterator<std::bidirectional_iterator_tag, T, DiffType>
 	{
 	public:
 		typedef NodeType                        	node_type;
@@ -289,11 +269,12 @@ namespace ft
 		node_pointer ptr;
 
 	public:
-		typedef bidirectional_iterator_tag	iterator_category;
-		typedef T                         	value_type;
-		typedef DiffType                  	difference_type;
-		typedef value_type&               	reference;
-		typedef value_type*               	pointer;
+		typedef iterator<std::bidirectional_iterator_tag, T>               	iter_type;
+		typedef typename iterator_traits<iter_type>::iterator_category	iterator_category;
+		typedef typename iterator_traits<iter_type>::value_type       	value_type;
+		typedef typename iterator_traits<iter_type>::difference_type  	difference_type;
+		typedef typename iterator_traits<iter_type>::pointer          	pointer;
+		typedef typename iterator_traits<iter_type>::reference        	reference;
 
 		/* Constructors */
 		tree_iterator() : ptr(nullptr) {}
@@ -322,9 +303,8 @@ namespace ft
 		friend bool operator!=(const tree_iterator& x, const tree_iterator& y)
 		{return !(x == y);}
 
-		/* Getter & Setter */
+		/* Getter */
 		node_pointer get_np() const { return ptr; }
-		void set_np(node_pointer p) { ptr = p; }
 
 
 	private:
