@@ -45,7 +45,7 @@ namespace ft
 						const allocator_type& alloc = allocator_type())
 			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {
 			if (n > 0) {
-				if (static_cast<size_type>(n) > this->max_size())
+				if (n > this->max_size())
 					throw std::length_error("vector");
 				this->_begin = this->_end = _alloc.allocate(n);
 				this->_end_cap = this->_begin + n;
@@ -75,7 +75,7 @@ namespace ft
 			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(x._alloc) {
 			size_type n = x.size();
 			if (n > 0) {
-				if (static_cast<size_type>(n) > this->max_size())
+				if (n > this->max_size())
 					throw std::length_error("vector");
 				this->_begin = this->_end = _alloc.allocate(n);
 				this->_end_cap = this->_begin + n;
@@ -135,7 +135,7 @@ namespace ft
 		}
 		
 		void resize (size_type n, value_type val = value_type()) {
-			if (static_cast<size_type>(n) > this->max_size())
+			if (n > this->max_size())
 				throw std::length_error("vector");
 
 			size_type s = this->size();
@@ -169,7 +169,7 @@ namespace ft
 		void reserve (size_type n) {
 			if (n > this->capacity()) {
 
-				if (static_cast<size_type>(n) > this->max_size())
+				if (n > this->max_size())
 					throw std::length_error("vector");
 
 				pointer new_begin, new_end;
@@ -246,7 +246,7 @@ namespace ft
 		}
 
 		void assign (size_type n, const value_type& val) {
-			if (static_cast<size_type>(n) > this->max_size())
+			if (n > this->max_size())
 				throw std::length_error("vector");
 			
 			this->clear();
@@ -316,7 +316,7 @@ namespace ft
 
 		void insert (iterator position, size_type n, const value_type& val) {
 			if (n > 0) {
-				if (this->size() + static_cast<size_type>(n) > this->max_size())
+				if (this->size() + n > this->max_size())
 					throw std::length_error("vector");
 				
 				pointer pos = this->_begin + (position - this->begin());
