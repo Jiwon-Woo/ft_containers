@@ -1,6 +1,6 @@
 # compile flag
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address -g3
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 #-fsanitize=address -g3
 LFLAGS = -L$(LIB) -l$(LIBNAME)
 IFLAGS = -I$(INCLUDE)
 DFLAGS = -D$(MECRO)
@@ -15,14 +15,14 @@ FT = ft_container
 STD = std_container
 
 # directory name
-INCLUDE = include
-SRC = src
+INCLUDE = includes
+SRC = srcs
 OBJ = obj
 LIB = lib
 
 # file name
-MAIN = $(SRC)/main.cpp
-TEST = main
+MAIN = $(SRC)/vector_test.cpp
+TEST = vector_test map_test main
 SOURCE = iterator map stack tree utils vector
 HEADER = $(foreach src, $(SOURCE), $(INCLUDE)/$(src).hpp)
 OBJECT = $(foreach file, $(TEST), $(OBJ)/$(file).o)
