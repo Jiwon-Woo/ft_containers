@@ -30,8 +30,8 @@ namespace ft
 		node_pointer   	right;
 		node_pointer   	left;
 
-		tree_node() : parent(nullptr), right(nullptr), left(nullptr) {}
-		tree_node(const node_value_type& v) : value(v), parent(nullptr), right(nullptr), left(nullptr) {}
+		tree_node() : parent(NULL), right(NULL), left(NULL) {}
+		tree_node(const node_value_type& v) : value(v), parent(NULL), right(NULL), left(NULL) {}
 		tree_node(const tree_node& tn) : value(tn.value), parent(tn.parent), right(tn.right), left(tn.left) {}
 		~tree_node() {}
 
@@ -326,7 +326,7 @@ namespace ft
 			node_pointer current = _root;
 			node_pointer result = _super_root;
 
-			while (current != nullptr)
+			while (current != NULL)
 			{
 				if (!_value_comp(current->value, v))
 				{
@@ -344,7 +344,7 @@ namespace ft
 			node_pointer current = _root;
 			node_pointer result = _super_root;
 
-			while (current != nullptr)
+			while (current != NULL)
 			{
 				if (!_value_comp(current->value, v))
 				{
@@ -362,7 +362,7 @@ namespace ft
 			node_pointer current = _root;
 			node_pointer result = _super_root;
 
-			while (current != nullptr)
+			while (current != NULL)
 			{
 				if (_value_comp(v, current->value))
 				{
@@ -380,7 +380,7 @@ namespace ft
 			node_pointer current = _root;
 			node_pointer result = _super_root;
 
-			while (current != nullptr)
+			while (current != NULL)
 			{
 				if (_value_comp(v, current->value))
 				{
@@ -576,7 +576,7 @@ namespace ft
 				
 			} else if (prev_child_num == 1) {
 				node_pointer prev_child = prev_ptr->left;
-				if (prev_child == nullptr)
+				if (prev_child == NULL)
 					prev_child = prev_ptr->right;
 				
 				if (prev_direction == LEFT)

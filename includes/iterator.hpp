@@ -177,12 +177,12 @@ namespace ft
 	
 	public:
 		/* Constructors */
-		vector_iterator() : i(nullptr) {}
+		vector_iterator() : i(NULL) {}
 		vector_iterator(const vector_iterator& vi) : i(vi.base()) {}
 		vector_iterator(pointer it) : i(it) {}
 		template <class Iterator>
 		vector_iterator(const vector_iterator<Iterator>& u,
-				typename ft::enable_if<!ft::is_integral<Iterator>::value>::type* = nullptr)
+				typename ft::enable_if<!ft::is_integral<Iterator>::value>::type* = NULL)
 			: i(u.base()) {}
 
 		/* Assignment Operator */
@@ -278,7 +278,7 @@ namespace ft
 		typedef typename iterator_traits<iter_type>::reference        	reference;
 
 		/* Constructors */
-		tree_iterator() : ptr(nullptr) {}
+		tree_iterator() : ptr(NULL) {}
 		tree_iterator(const tree_iterator& ti) : ptr(ti.get_np()) {}
 		explicit tree_iterator(node_pointer p) : ptr(p) {}
 
@@ -311,12 +311,12 @@ namespace ft
 	private:
 		node_pointer tree_next_iter(node_pointer x)
 		{
-			if (x->parent == nullptr) {
+			if (x->parent == NULL) {
 				return x;
 			}
-			if (x->right != nullptr) {
+			if (x->right != NULL) {
 				x = x->right;
-				while (x->left != nullptr)
+				while (x->left != NULL)
 					x = x->left;
 				return x;
 			}
@@ -327,14 +327,14 @@ namespace ft
 
 		node_pointer tree_prev_iter(node_pointer x)
 		{
-			if (x->parent == nullptr) {
-				while (x->right != nullptr)
+			if (x->parent == NULL) {
+				while (x->right != NULL)
 					x = x->right;
 				return x;
 			}
-			if (x->left != nullptr) {
+			if (x->left != NULL) {
 				x = x->left;
-				while (x->right != nullptr)
+				while (x->right != NULL)
 					x = x->right;
 				return x;
 			}

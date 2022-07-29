@@ -39,11 +39,11 @@ namespace ft
 		/* **************** */
 
 		explicit vector(const allocator_type& alloc = allocator_type())
-			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {}
+			: _begin(NULL), _end(NULL), _end_cap(NULL), _alloc(alloc) {}
 
 		explicit vector(size_type n, const value_type& val = value_type(),
 						const allocator_type& alloc = allocator_type())
-			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {
+			: _begin(NULL), _end(NULL), _end_cap(NULL), _alloc(alloc) {
 			if (n > 0) {
 				if (n > this->max_size())
 					throw std::length_error("vector");
@@ -57,8 +57,8 @@ namespace ft
 
 		template <class InputIterator>
 		vector(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = nullptr)
-			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(alloc) {
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL)
+			: _begin(NULL), _end(NULL), _end_cap(NULL), _alloc(alloc) {
 			difference_type n = std::distance(first, last);
 			if (n > 0) {
 				if (static_cast<size_type>(n) > this->max_size())
@@ -72,7 +72,7 @@ namespace ft
 		}
 
 		vector (const vector& x)
-			: _begin(nullptr), _end(nullptr), _end_cap(nullptr), _alloc(x._alloc) {
+			: _begin(NULL), _end(NULL), _end_cap(NULL), _alloc(x._alloc) {
 			size_type n = x.size();
 			if (n > 0) {
 				if (n > this->max_size())
@@ -228,7 +228,7 @@ namespace ft
 
 		template <class InputIterator>
 		void assign (InputIterator first, InputIterator last,
-				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = nullptr) {
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL) {
 			difference_type n = std::distance(first, last);
 			if (static_cast<size_type>(n) > this->max_size())
 				throw std::length_error("vector");
@@ -360,7 +360,7 @@ namespace ft
 
 		template <class InputIterator>
 		void insert (iterator position, InputIterator first, InputIterator last,
-				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = nullptr) {
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL) {
 			difference_type n = std::distance(first, last);
 			if (n > 0) {
 				if (this->size() + static_cast<size_type>(n) > this->max_size())
