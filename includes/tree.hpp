@@ -174,10 +174,8 @@ namespace ft
 		size_type size() const {return _size;}
 
 		size_type max_size() const {
-			return std::min<size_type>(
-				static_cast<size_type>(_alloc.max_size()),
-				static_cast<size_type>(std::numeric_limits<size_type>::max())
-			);
+			return std::min<size_type>(_alloc.max_size(),
+				std::numeric_limits<difference_type>::max());
 		}
 
 

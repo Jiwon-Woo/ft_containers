@@ -129,7 +129,10 @@ namespace ft
 		size_type size() const { return static_cast<size_type>(this->_end - this->_begin); }
 		size_type capacity() const { return static_cast<size_type>(this->_end_cap - this->_begin); }
 		bool empty() const { return this->_begin == this->_end; }
-		size_type max_size() const { return std::numeric_limits<size_type>::max() / sizeof(value_type); }
+		size_type max_size() const {
+			return std::min<size_type>(_alloc.max_size(),
+				std::numeric_limits<difference_type>::max());
+		}
 		
 		void resize (size_type n, value_type val = value_type()) {
 			if (static_cast<size_type>(n) > this->max_size())
