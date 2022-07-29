@@ -63,17 +63,17 @@ namespace ft
 	class tree
 	{
 	public:
-		typedef T                                                      	value_type;
-		typedef Compare                                                	value_compare;
-		typedef Node                                                   	node_type;
-		typedef typename Alloc::template rebind<node_type>::other      	allocator_type;
-		typedef typename allocator_type::pointer                       	pointer;
-		typedef typename allocator_type::const_pointer                 	const_pointer;
-		typedef std::size_t                                            	size_type;
-		typedef std::ptrdiff_t                                         	difference_type;
-		typedef typename node_type::node_pointer                       	node_pointer;
-		typedef	typename ft::tree_iterator<value_type, node_type>      	iterator;
-		typedef typename ft::tree_iterator<const value_type, node_type>	const_iterator;
+		typedef T                                                       	value_type;
+		typedef Compare                                                 	value_compare;
+		typedef Node                                                    	node_type;
+		typedef typename Alloc::template rebind<node_type>::other       	allocator_type;
+		typedef typename allocator_type::pointer                        	pointer;
+		typedef typename allocator_type::const_pointer                  	const_pointer;
+		typedef std::size_t                                             	size_type;
+		typedef std::ptrdiff_t                                          	difference_type;
+		typedef typename node_type::node_pointer                        	node_pointer;
+		typedef	typename ft::tree_iterator<value_type, node_type>       	iterator;
+		typedef typename ft::tree_iterator<const value_type, node_type> 	const_iterator;
 
 	private:
 		node_pointer  	_root;

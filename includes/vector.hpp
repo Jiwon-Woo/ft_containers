@@ -90,7 +90,7 @@ namespace ft
 		/*   Destructors   */
 		/* *************** */
 
-		virtual ~vector() {
+		~vector() {
 			this->clear();
 			_alloc.deallocate(this->_begin, this->capacity());
 		}

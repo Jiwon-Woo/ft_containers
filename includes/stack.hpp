@@ -9,9 +9,9 @@ namespace ft
 	class stack
 	{
 	public:
-		typedef T          	value_type;
-		typedef Container  	container_type;
-		typedef std::size_t	size_type;
+		typedef T           	value_type;
+		typedef Container   	container_type;
+		typedef std::size_t 	size_type;
 	
 	protected:
 		container_type c;
@@ -22,7 +22,7 @@ namespace ft
 		stack(const stack& other) : c(other.c) {}
 
 		/* Destructors */
-		virtual ~stack() {}
+		~stack() {}
 
 		/* Assignment */
 		stack& operator=(const stack& other) {

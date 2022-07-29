@@ -199,7 +199,7 @@ namespace ft
 		}
 
 		/* Destrcutor */
-		virtual ~vector_iterator() {}
+		~vector_iterator() {}
 
 		/* Member function */
 		pointer base() const { return i; }
@@ -270,7 +270,7 @@ namespace ft
 		node_pointer ptr;
 
 	public:
-		typedef iterator<std::bidirectional_iterator_tag, T>               	iter_type;
+		typedef iterator<std::bidirectional_iterator_tag, T>          	iter_type;
 		typedef typename iterator_traits<iter_type>::iterator_category	iterator_category;
 		typedef typename iterator_traits<iter_type>::value_type       	value_type;
 		typedef typename iterator_traits<iter_type>::difference_type  	difference_type;
@@ -288,7 +288,7 @@ namespace ft
 		}
 
 		/* Destrcutor */
-		virtual ~tree_iterator() {}
+		~tree_iterator() {}
 
 		/* Member function Operators */
 		reference operator*() const {return ptr->value;}
